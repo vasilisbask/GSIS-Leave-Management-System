@@ -812,26 +812,22 @@ body .ui-growl-item-container {
 }
 
 .center-column-header {
+    position: relative !important;
     text-align: center !important;
     vertical-align: middle !important;
 }
 
 .center-column-header .ui-column-title {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: auto !important;
+    display: block !important;
+    width: 100% !important;
     text-align: center !important;
-    vertical-align: middle !important;
 }
 
 .center-column-header .ui-sortable-column-icon {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    position: absolute !important;
+    right: 10px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin-left: 0 !important;
     float: none !important;
-    position: static !important;
-    margin-left: 8px !important;
-    vertical-align: middle !important;
-    transform: none !important;
 }

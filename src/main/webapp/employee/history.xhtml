@@ -86,15 +86,19 @@
                 <p:column headerText="ΑΙΤΙΟΛΟΓΗΣΗ"
                           headerStyleClass="center-column-header"
                           style="text-align:center; min-width:180px;">
-                    <h:outputText value="#{leaveReq.reason}"
-                                  rendered="#{not empty leaveReq.reason}"
-                                  style="color:var(--text-sub); font-size:0.875rem;" />
-
+                    <h:panelGroup rendered="#{not empty leaveReq.reason}"
+                                  layout="block"
+                                  style="display:flex; justify-content:center; align-items:center; width:100%;">
+                        <span style="color:var(--text-sub); font-size:0.875rem;">
+                            #{leaveReq.reason}
+                        </span>
+                    </h:panelGroup>
                     <h:panelGroup rendered="#{empty leaveReq.reason}"
                                   layout="block"
                                   style="display:flex; justify-content:center; align-items:center; width:100%;">
                         <span style="color:var(--text-sub);">-</span>
                     </h:panelGroup>
+
                 </p:column>
 
                 <p:column headerText="ΣΧΟΛΙΟ ΠΡΟΪΣΤΑΜΕΝΟΥ"

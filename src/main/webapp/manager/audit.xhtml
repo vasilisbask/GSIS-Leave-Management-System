@@ -55,7 +55,7 @@
                           filterPlaceholder="Αναζήτηση..."
                           exportValue="#{auditController.exportUser(log)}"
                           headerStyleClass="center-column-header"
-                          style="min-width:220px;">
+                          style="min-width:220px; text-align:center;">
                     <div style="display:flex; align-items:center; gap:8px;">
                         <span style="width:30px; height:30px; border-radius:50%;
                                      background:var(--blue-light); color:var(--blue);
@@ -80,7 +80,7 @@
                           filterPlaceholder="Αναζήτηση..."
                           exportValue="#{auditController.exportTargetEmployee(log)}"
                           headerStyleClass="center-column-header"
-                          style="min-width:220px;">
+                          style="min-width:220px; text-align:center;">
                     <ui:param name="employee" value="#{auditController.getTargetEmployee(log)}" />
 
                     <h:panelGroup rendered="#{not empty employee}">
