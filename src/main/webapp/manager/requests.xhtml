@@ -51,6 +51,8 @@
                          var="leaveReq"
                          rowKey="#{leaveReq.id}"
                          selection="#{managerController.selectedRequests}"
+                         selectionMode="multiple"
+                         rowSelectMode="add"
                          emptyMessage="Δεν υπάρχουν εκκρεμή αιτήματα αυτή τη στιγμή."
                          paginator="true"
                          rows="10"
@@ -59,6 +61,8 @@
                          rowsPerPageTemplate="10,30,50"
                          style="margin-top:0;">
 
+                <p:ajax event="rowSelect" update="@form" />
+                <p:ajax event="rowUnselect" update="@form" />
                 <p:ajax event="rowSelectCheckbox" update="@form" />
                 <p:ajax event="rowUnselectCheckbox" update="@form" />
                 <p:ajax event="toggleSelect" update="@form" />
