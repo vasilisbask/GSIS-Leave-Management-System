@@ -7,7 +7,7 @@
 
     <ui:define name="content">
 
-        <h:form id="employeeDashboardForm">
+        <h:form id="employeeDashboardForm" enctype="multipart/form-data">
             <p:growl id="messages" showDetail="true" life="4000" />
 
             <div class="page-header">
@@ -78,10 +78,15 @@
             <div class="chart-container" style="grid-template-columns:1fr;">
                 <div class="chart-box">
                     <div class="chart-box-header">
-                        <h3><i class="pi pi-send" style="margin-right:6px;"></i>Νέο Αίτημα Άδειας</h3>
+                        <h3>
+                            <i class="pi pi-send" style="margin-right:6px;"></i>
+                            Νέο Αίτημα Άδειας
+                        </h3>
                     </div>
+
                     <div class="chart-box-body">
                         <div class="ui-fluid" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+
                             <div>
                                 <p:outputLabel for="startDate" value="Ημερομηνία Έναρξης" />
                                 <p:datePicker id="startDate"
@@ -121,11 +126,17 @@
                                                    itemValue="#{type.displayName}" />
                                     <p:ajax update="typeBalance workingDays" />
                                 </p:selectOneMenu>
-                                <h:panelGroup id="typeBalance" layout="block"
+
+                                <h:panelGroup id="typeBalance"
+                                              layout="block"
                                               rendered="#{not empty employeeController.leaveType}"
                                               style="margin-top:6px; font-size:0.82rem; color:var(--text-sub);">
                                     <i class="pi pi-info-circle" style="margin-right:4px;"></i>
-                                    Υπόλοιπο: <span class="fw-bold" style="color:var(--blue);">#{employeeController.selectedTypeBalance}</span> ημέρες
+                                    Υπόλοιπο:
+                                    <span class="fw-bold" style="color:var(--blue);">
+                                        #{employeeController.selectedTypeBalance}
+                                    </span>
+                                    ημέρες
                                 </h:panelGroup>
                             </div>
 
@@ -146,13 +157,33 @@
                                                  style="width:100%;"
                                                  placeholder="Προσθέστε αιτιολόγηση..." />
                             </div>
+
+                            <div style="grid-column:1 / -1;">
+                                <p:outputLabel for="attachment" value="Προσθήκη Αρχείου" />
+                                <span class="text-muted" style="font-size:0.85rem;">
+                                    (Προαιρετικά)
+                                </span>
+
+                                <div style="margin-top:6px;">
+                                    <p:fileUpload id="attachment"
+                                                  value="#{employeeController.uploadedFile}"
+                                                  mode="simple"
+                                                  skinSimple="true"
+                                                  chooseLabel="Προσθήκη αρχείου"
+                                                  allowTypes="/(\.|\/)(pdf)$/"
+                                                  accept=".pdf,application/pdf"
+                                                  invalidFileMessage="Επιτρέπονται μόνο αρχεία PDF."
+                                                  styleClass="fixed-file-upload" />
+                                </div>
+                            </div>
+
                         </div>
 
                         <div class="dialog-actions" style="margin-top:18px;">
                             <p:commandButton value="Υποβολή Αιτήματος"
                                              icon="pi pi-send"
                                              action="#{employeeController.submitLeaveRequest}"
-                                             update="@form"
+                                             ajax="false"
                                              styleClass="btn-approve" />
                         </div>
                     </div>

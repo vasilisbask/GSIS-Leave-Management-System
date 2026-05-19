@@ -6,6 +6,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import com.company.lms.util.GreekHolidayUtil;
+import jakarta.persistence.Basic;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
 
 @Entity
 @Table(name = "leaves")
@@ -30,6 +33,17 @@ public class LeaveRequest implements Serializable {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "attachment_data")
+    private byte[] attachmentData;
+
+    @Column(name = "attachment_file_name")
+    private String attachmentFileName;
+
+    @Column(name = "attachment_content_type")
+    private String attachmentContentType;
 
     @PrePersist
     private void onCreate() {
@@ -90,4 +104,18 @@ public class LeaveRequest implements Serializable {
     public int getWorkingDays() {
         return GreekHolidayUtil.calculateWorkingDays(startDate, endDate);
     }
+
+    public byte[] getAttachmentData() { return attachmentData; }
+
+    public void setAttachmentData(byte[] attachmentData) { this.attachmentData = attachmentData; }
+
+    public String getAttachmentFileName() { return attachmentFileName; }
+
+    public void setAttachmentFileName(String attachmentFileName) { this.attachmentFileName = attachmentFileName; }
+
+    public String getAttachmentContentType() { return attachmentContentType; }
+
+    public void setAttachmentContentType(String attachmentContentType) { this.attachmentContentType = attachmentContentType; }
+
+    public boolean hasAttachment() { return attachmentData != null && attachmentData.length > 0; }
 }

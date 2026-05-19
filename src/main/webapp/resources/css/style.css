@@ -831,3 +831,49 @@ body .ui-growl-item-container {
     margin-left: 0 !important;
     float: none !important;
 }
+
+.file-download-link {
+    color: var(--blue) !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    display: inline-block !important;
+    max-width: 160px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
+.file-download-link:hover {
+    text-decoration: underline !important;
+    color: var(--orange) !important;
+}
+
+.fixed-file-upload {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.fixed-file-upload .ui-fileupload-choose,
+.fixed-file-upload .ui-button {
+    width: 190px !important;
+    min-width: 190px !important;
+    max-width: 190px !important;
+    justify-content: center !important;
+}
+
+.fixed-file-upload .ui-button-text {
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+}
+
+.fixed-file-upload .ui-fileupload-filename {
+    max-width: 260px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    color: var(--text-sub) !important;
+    font-size: 0.85rem !important;
+}

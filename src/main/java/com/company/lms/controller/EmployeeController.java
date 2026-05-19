@@ -12,7 +12,12 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.primefaces.model.file.UploadedFile;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
@@ -35,6 +40,7 @@ public class EmployeeController implements Serializable {
     private String leaveType;
     private String reason;
     private LeaveRequest selectedRequest;
+    private UploadedFile uploadedFile;
 
     @PostConstruct
     public void init() {
@@ -61,7 +67,33 @@ public class EmployeeController implements Serializable {
                 throw new IllegalStateException("Απαιτείται σύνδεση χρήστη.");
             }
 
-            employeeService.submitLeaveRequest(loggedInUser.getId(), startDate, endDate, leaveType, reason);
+            String attachmentFileName = null;
+            String attachmentContentType = null;
+            byte[] attachmentData = null;
+
+            if (uploadedFile != null && uploadedFile.getSize() > 0) {
+                String fileName = uploadedFile.getFileName();
+                String contentType = uploadedFile.getContentType();
+
+                boolean isPdfByName = fileName != null && fileName.toLowerCase().endsWith(".pdf");
+                boolean isPdfByContentType = "application/pdf".equalsIgnoreCase(contentType);
+
+                if (!isPdfByName && !isPdfByContentType) {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(
+                                    FacesMessage.SEVERITY_ERROR,
+                                    "Σφάλμα",
+                                    "Επιτρέπονται μόνο αρχεία PDF."
+                            ));
+                    return;
+                }
+
+                attachmentFileName = fileName;
+                attachmentContentType = contentType != null ? contentType : "application/pdf";
+                attachmentData = uploadedFile.getContent();
+            }
+
+            employeeService.submitLeaveRequest(loggedInUser.getId(), startDate, endDate, leaveType, reason, attachmentFileName, attachmentContentType, attachmentData);
 
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Επιτυχία", "Το αίτημα άδειας υποβλήθηκε."));
@@ -70,6 +102,7 @@ public class EmployeeController implements Serializable {
             endDate = null;
             leaveType = null;
             reason = null;
+            uploadedFile = null;
             loadEmployeeData();
 
         } catch (Exception e) {
@@ -118,6 +151,18 @@ public class EmployeeController implements Serializable {
                 .count();
     }
 
+    public StreamedContent downloadAttachment(LeaveRequest request) {
+        if (request == null || request.getAttachmentData() == null || request.getAttachmentData().length == 0) {
+            return null;
+        }
+
+        return DefaultStreamedContent.builder()
+                .name(request.getAttachmentFileName())
+                .contentType(request.getAttachmentContentType())
+                .stream(() -> new ByteArrayInputStream(request.getAttachmentData()))
+                .build();
+    }
+
     public LocalDate getToday() { return LocalDate.now(); }
 
     public Employee getEmployee() { return employee; }
@@ -134,4 +179,6 @@ public class EmployeeController implements Serializable {
     public void setReason(String reason) { this.reason = reason; }
     public LeaveRequest getSelectedRequest() { return selectedRequest; }
     public void setSelectedRequest(LeaveRequest selectedRequest) { this.selectedRequest = selectedRequest; }
+    public UploadedFile getUploadedFile() { return uploadedFile; }
+    public void setUploadedFile(UploadedFile uploadedFile) { this.uploadedFile = uploadedFile; }
 }

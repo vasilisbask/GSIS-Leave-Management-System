@@ -13,6 +13,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import java.io.ByteArrayInputStream;
 
 @Named
 @ViewScoped
@@ -178,6 +181,18 @@ public class ManagerController implements Serializable {
         return selectedRequests.stream()
                 .map(LeaveRequest::getId)
                 .collect(Collectors.toList());
+    }
+
+    public StreamedContent downloadAttachment(LeaveRequest request) {
+        if (request == null || request.getAttachmentData() == null || request.getAttachmentData().length == 0) {
+            return null;
+        }
+
+        return DefaultStreamedContent.builder()
+                .name(request.getAttachmentFileName())
+                .contentType(request.getAttachmentContentType())
+                .stream(() -> new ByteArrayInputStream(request.getAttachmentData()))
+                .build();
     }
 
     // Getters and Setters

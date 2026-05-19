@@ -38,7 +38,7 @@ public class EmployeeLeaveService {
     }
 
     @Transactional
-    public void submitLeaveRequest(Integer employeeId, LocalDate startDate, LocalDate endDate, String leaveType, String reason) {
+    public void submitLeaveRequest(Integer employeeId, LocalDate startDate, LocalDate endDate, String leaveType, String reason, String attachmentFileName, String attachmentContentType, byte[] attachmentData) {
         Employee employee = employeeRepo.findById(employeeId);
 
         if (employee == null) {
@@ -89,6 +89,12 @@ public class EmployeeLeaveService {
         request.setLeaveType(leaveType);
         request.setReason(reason);
         request.setStatus(LeaveStatus.PENDING);
+
+        if (attachmentData != null && attachmentData.length > 0) {
+            request.setAttachmentFileName(attachmentFileName);
+            request.setAttachmentContentType(attachmentContentType);
+            request.setAttachmentData(attachmentData);
+        }
 
         leaveRepo.save(request);
 

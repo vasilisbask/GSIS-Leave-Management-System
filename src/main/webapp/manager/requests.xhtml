@@ -144,6 +144,29 @@
 
                 </p:column>
 
+                <p:column headerText="ΑΡΧΕΙΟ"
+                          headerStyleClass="center-column-header"
+                          style="width:180px; text-align:center;">
+                    <h:panelGroup rendered="#{leaveReq.hasAttachment()}"
+                                  layout="block"
+                                  style="display:flex; justify-content:center; align-items:center; width:100%;">
+                        <p:commandLink value="#{leaveReq.attachmentFileName}"
+                                       ajax="false"
+                                       onclick="event.stopPropagation();"
+                                       styleClass="file-download-link"
+                                       title="#{leaveReq.attachmentFileName}">
+                            <p:fileDownload value="#{managerController.downloadAttachment(leaveReq)}"
+                                            contentDisposition="attachment" />
+                        </p:commandLink>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{not leaveReq.hasAttachment()}"
+                                  layout="block"
+                                  style="display:flex; justify-content:center; align-items:center; width:100%;">
+                        <span style="color:var(--text-sub);">-</span>
+                    </h:panelGroup>
+                </p:column>
+
                 <p:column headerText="ΕΝΕΡΓΕΙΕΣ"
                           headerStyleClass="center-column-header"
                           style="width:290px; text-align:center;">
