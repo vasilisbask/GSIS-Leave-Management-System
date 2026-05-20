@@ -2,7 +2,11 @@
 
 A Jakarta EE web application for managing employee leave requests in an enterprise-style environment.
 
-Employees can submit leave requests and view their leave history. Managers can review, approve or reject requests from their assigned employees, view statistics, and inspect the audit log.
+Employees can submit leave requests and view their leave history. Managers can review, approve or reject requests from their assigned employees, view statistics, and inspect the audit log. Secretaries can manage users, assign roles, set manager assignments, and adjust leave balances across the organization.
+
+## Internship
+
+This project is being developed as part of an internship at the **General Secretariat of Information Systems (GSIS — Γενική Γραμματεία Πληροφοριακών Συστημάτων)**.
 
 ## Tech Stack
 
@@ -37,31 +41,21 @@ Employees can submit leave requests and view their leave history. Managers can r
 - Export audit log data
 - Submit and view personal leave requests as an employee
 
+### Secretary
+
+- View all registered users with paginated search and role filtering
+- Change user roles (Employee / Manager / Secretary)
+- Assign or remove a manager for any employee
+- Adjust leave balances (annual / sick / other) per employee
+- All secretary actions are recorded in the audit log
+- Secretaries cannot change their own role
+
 ## Database
 
-The database tables are generated automatically from the JPA entities when the application is deployed to Payara.
-
-Required database name:
+The only manual step required is creating the empty database. JPA will generate all tables automatically on first deployment, and the application will seed the required roles (`EMPLOYEE`, `MANAGER`, `SECRETARY`) at startup via `DatabaseSeeder`.
 
 ```sql
 CREATE DATABASE employee_leaves;
-```
-
-After deployment, insert the required roles:
-
-```sql
-INSERT IGNORE INTO roles (role_name)
-VALUES
-('MANAGER'),
-('EMPLOYEE');
-```
-
-To assign a manager to an employee:
-
-```sql
-UPDATE employees
-SET manager_id = 1
-WHERE id = 2;
 ```
 
 ## Payara Setup
@@ -114,6 +108,9 @@ http://localhost:8080/leave-management-system
 - Managers cannot approve or reject their own leave requests.
 - Leave requests cannot overlap with existing pending or approved requests.
 - Leave duration is calculated using working days, excluding weekends and Greek public holidays.
+- Secretaries cannot change their own role.
+- A user cannot be assigned as their own manager.
+- If a manager's role is changed, all their subordinates are automatically unassigned.
 
 ## Main Pages
 
@@ -125,14 +122,15 @@ http://localhost:8080/leave-management-system
 /manager/stats.xhtml
 /manager/requests.xhtml
 /manager/audit.xhtml
+/secretary/users.xhtml
 /403.xhtml
 ```
 
 ## Security
 
 - Passwords are hashed with BCrypt.
-- Role-based access logic separates employee and manager functionality.
-- Audit logs record manager approval and rejection actions.
+- Role-based access logic separates employee, manager, and secretary functionality.
+- Audit logs record manager approval/rejection actions and all secretary administrative actions.
 
 ## Email Notifications
 
@@ -143,6 +141,10 @@ The application supports SMTP email notifications for:
 - leave request rejection
 
 Email credentials are not stored in the source code. SMTP settings are configured through Payara JVM Options.
+
 ## Authors
 
-Developed as part of a university internship / academic software development project.
+Developed during an internship at GSIS (General Secretariat of Information Systems) as part of a university academic software development project.
+
+- Dimitris Koutsompinas
+- Vasilis Baskairon

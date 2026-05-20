@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebFilter(filterName = "AuthFilter", urlPatterns = {"/manager/*", "/employee/*"})
+@WebFilter(filterName = "AuthFilter", urlPatterns = {"/manager/*", "/employee/*", "/secretary/*"})
 public class AuthFilter implements Filter {
 
     @Override
@@ -43,6 +43,12 @@ public class AuthFilter implements Filter {
             // Prevent Employees from accessing Manager pages
             if (requestURI.startsWith(contextPath + "/manager/") && !"MANAGER".equals(role)) {
                 res.sendRedirect(contextPath + "/employee/dashboard.xhtml");
+                return; // Stop processing
+            }
+
+            // Prevent unauthorized access to Secretary pages
+            if (requestURI.startsWith(contextPath + "/secretary/") && !"SECRETARY".equals(role)) {
+                res.sendRedirect(contextPath + "/403.xhtml");
                 return; // Stop processing
             }
 

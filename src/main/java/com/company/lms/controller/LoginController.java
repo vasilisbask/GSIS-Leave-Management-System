@@ -66,6 +66,8 @@ public class LoginController implements Serializable {
 
         if ("MANAGER".equals(role)) {
             return "/manager/requests.xhtml?faces-redirect=true";
+        } else if ("SECRETARY".equals(role)) {
+            return "/secretary/users.xhtml?faces-redirect=true";
         }
 
         return "/employee/dashboard.xhtml?faces-redirect=true";

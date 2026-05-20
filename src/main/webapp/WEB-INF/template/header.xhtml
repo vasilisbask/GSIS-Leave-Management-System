@@ -99,6 +99,29 @@
 
             </h:panelGroup>
 
+            <!-- Secretary menu -->
+            <h:panelGroup rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'SECRETARY'}">
+
+                <h:outputLink value="#{request.contextPath}/secretary/users.xhtml"
+                              styleClass="nav-item #{request.servletPath.contains('/secretary/users') ? 'active' : ''}">
+                    <i class="pi pi-users"></i>
+                    <span>ΔΙΑΧΕΙΡΙΣΗ ΧΡΗΣΤΩΝ</span>
+                </h:outputLink>
+
+                <h:outputLink value="#{request.contextPath}/employee/dashboard.xhtml"
+                              styleClass="nav-item #{request.servletPath.contains('/employee/dashboard') ? 'active' : ''}">
+                    <i class="pi pi-send"></i>
+                    <span>ΝΕΟ ΑΙΤΗΜΑ ΑΔΕΙΑΣ</span>
+                </h:outputLink>
+
+                <h:outputLink value="#{request.contextPath}/employee/history.xhtml"
+                              styleClass="nav-item #{request.servletPath.contains('/employee/history') ? 'active' : ''}">
+                    <i class="pi pi-calendar"></i>
+                    <span>ΙΣΤΟΡΙΚΟ ΑΔΕΙΩΝ</span>
+                </h:outputLink>
+
+            </h:panelGroup>
+
             <!-- Employee menu -->
             <h:panelGroup rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'EMPLOYEE'}">
 

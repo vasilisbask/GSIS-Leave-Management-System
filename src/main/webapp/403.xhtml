@@ -52,6 +52,14 @@
                     </h:outputLink>
                 </h:panelGroup>
 
+                <h:panelGroup rendered="#{loginController.loggedInUserRole eq 'SECRETARY'}">
+                    <h:outputLink value="#{request.contextPath}/secretary/users.xhtml"
+                                  styleClass="btn-primary"
+                                  style="display:inline-block; margin-top:16px; text-decoration:none;">
+                        Επιστροφή στη Διαχείριση Χρηστών
+                    </h:outputLink>
+                </h:panelGroup>
+
                 <h:panelGroup rendered="#{empty loginController.loggedInUser}">
                     <h:outputLink value="#{request.contextPath}/login.xhtml"
                                   styleClass="btn-primary"

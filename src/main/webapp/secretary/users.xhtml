@@ -1,0 +1,336 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/layout.xhtml">
+
+    <ui:define name="content">
+
+        <h:form id="usersForm">
+            <p:growl id="messages" showDetail="true" life="4000" />
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h2>
+                    <i class="pi pi-users"></i>
+                    Διαχείριση Χρηστών &amp; Υπολοίπων
+                </h2>
+            </div>
+
+            <!-- Toolbar containing Search Input -->
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <span class="ui-input-icon-left" style="position: relative; display: inline-flex; align-items: center;">
+                        <i class="pi pi-search" style="color: var(--text-muted); position: absolute; top: 50%; transform: translateY(-50%); left: 12px; margin-top: 0; pointer-events: none; font-size: 0.95rem; z-index: 1;" />
+                        <p:inputText id="searchQuery"
+                                     value="#{secretaryController.searchQuery}"
+                                     placeholder="Αναζήτηση με όνομα ή email..."
+                                     style="width: 320px; padding-left: 36px; height: 38px; border-radius: var(--radius); border: 1px solid var(--border); box-sizing: border-box;">
+                            <p:ajax event="keyup" delay="300" update="usersForm:usersTable" listener="#{secretaryController.onSearch}" />
+                        </p:inputText>
+                    </span>
+
+                    <p:selectOneMenu id="roleFilter"
+                                     value="#{secretaryController.filterRole}"
+                                     style="width: 200px;">
+                        <f:selectItem itemLabel="Όλοι οι ρόλοι" itemValue="" />
+                        <f:selectItem itemLabel="Υπάλληλος" itemValue="EMPLOYEE" />
+                        <f:selectItem itemLabel="Προϊστάμενος" itemValue="MANAGER" />
+                        <f:selectItem itemLabel="Γραμματεία" itemValue="SECRETARY" />
+                        <p:ajax event="change" update="usersForm:usersTable" listener="#{secretaryController.onFilter}" />
+                    </p:selectOneMenu>
+                </div>
+            </div>
+
+            <!-- Lazy Loaded DataTable -->
+            <p:dataTable id="usersTable"
+                         value="#{secretaryController.lazyModel}"
+                         var="user"
+                         lazy="true"
+                         paginator="true"
+                         rows="10"
+                         paginatorPosition="bottom"
+                         paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="10,20,50"
+                         emptyMessage="Δεν βρέθηκαν χρήστες που να αντιστοιχούν στα κριτήρια.">
+
+                <p:column headerText="ID" style="width:70px; text-align:center;">
+                    <span style="font-family: monospace; color:var(--text-sub); font-size:0.875rem;">
+                        #{user.id}
+                    </span>
+                </p:column>
+
+                <p:column headerText="Ονοματεπωνυμο" style="min-width:240px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="width:32px; height:32px; border-radius:50%;
+                                     background:var(--blue-light); color:var(--blue);
+                                     display:inline-flex; align-items:center; justify-content:center;
+                                     font-weight:700; font-size:0.85rem; flex-shrink:0;">
+                            #{not empty user.firstName ? user.firstName.substring(0,1) : ''}#{not empty user.lastName ? user.lastName.substring(0,1) : ''}
+                        </span>
+                        <div>
+                            <span class="fw-bold" style="display:block; font-size:0.9rem;">
+                                #{user.firstName} #{user.lastName}
+                            </span>
+                        </div>
+                    </div>
+                </p:column>
+
+                <p:column headerText="Email" style="min-width:200px;">
+                    <span style="color:var(--text-sub); font-size:0.875rem;">
+                        #{user.email}
+                    </span>
+                </p:column>
+
+                <p:column headerText="Ρολος" style="width:160px; text-align:center;">
+                    <h:panelGroup rendered="#{user.role.roleName eq 'MANAGER'}">
+                        <span class="badge badge-approved" style="text-transform:none;">
+                            <i class="pi pi-shield"></i>
+                            Προϊστάμενος
+                        </span>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{user.role.roleName eq 'SECRETARY'}">
+                        <span class="badge badge-pending" style="text-transform:none;">
+                            <i class="pi pi-bookmark"></i>
+                            Γραμματεία
+                        </span>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{user.role.roleName eq 'EMPLOYEE'}">
+                        <span class="badge" style="text-transform:none; background:#f0f4f8; color:#4a5a6a; border:1px solid #dde5ed;">
+                            <i class="pi pi-user"></i>
+                            Υπάλληλος
+                        </span>
+                    </h:panelGroup>
+                </p:column>
+
+                <p:column headerText="Προισταμενος" style="min-width:180px;">
+                    <h:panelGroup rendered="#{not empty user.manager}">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <i class="pi pi-user" style="color:var(--text-muted); font-size:0.9rem;" />
+                            <span style="font-size:0.9rem; color:var(--text-main);">
+                                #{user.manager.firstName} #{user.manager.lastName}
+                            </span>
+                        </div>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{empty user.manager}">
+                        <span style="color:var(--text-muted); font-style:italic; font-size:0.875rem;">-</span>
+                    </h:panelGroup>
+                </p:column>
+
+                <p:column headerText="Ενεργειες" style="width:440px; text-align:center;">
+                    <div class="table-actions">
+                        <p:commandButton icon="pi pi-user-edit"
+                                         value="Αλλαγή Ρόλου"
+                                         styleClass="btn-primary"
+                                         disabled="#{user.id eq loginController.loggedInUser.id}"
+                                         actionListener="#{secretaryController.selectUserForRoleEdit(user)}"
+                                         update=":roleDialogForm:roleDialogPanel"
+                                         oncomplete="PF('roleDialog').show()" />
+
+                        <p:commandButton icon="pi pi-user"
+                                         value="Προϊστάμενος"
+                                         styleClass="btn-export"
+                                         actionListener="#{secretaryController.selectUserForManagerEdit(user)}"
+                                         update=":managerDialogForm:managerDialogPanel"
+                                         oncomplete="PF('managerDialog').show()" />
+
+                        <p:commandButton icon="pi pi-calendar"
+                                         value="Υπόλοιπα"
+                                         styleClass="btn-export"
+                                         actionListener="#{secretaryController.selectUserForBalances(user)}"
+                                         update=":balancesDialogForm:balancesDialogPanel"
+                                         oncomplete="PF('balancesDialog').show()" />
+                    </div>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+
+        <!-- Edit User Role Dialog -->
+        <p:dialog header="Αλλαγή Ρόλου Χρήστη"
+                  widgetVar="roleDialog"
+                  modal="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  resizable="false"
+                  appendTo="@(body)"
+                  style="width:420px;">
+            <h:form id="roleDialogForm">
+                <p:outputPanel id="roleDialogPanel">
+                    <h:panelGroup rendered="#{not empty secretaryController.selectedUser}">
+                        
+                        <div class="dialog-employee-info">
+                            <i class="pi pi-user"></i>
+                            #{secretaryController.selectedUser.firstName} #{secretaryController.selectedUser.lastName}
+                        </div>
+
+                        <div class="dialog-comment-wrap" style="margin-top:14px; margin-bottom:20px;">
+                            <p:outputLabel for="roleSelect" value="Επιλογή Νέου Ρόλου" style="display:block; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-sub); margin-bottom:6px;" />
+                            <p:selectOneMenu id="roleSelect" value="#{secretaryController.newRoleName}" style="width:100%;">
+                                <f:selectItems value="#{secretaryController.allRoles}"
+                                               var="role"
+                                               itemValue="#{role.roleName}"
+                                               itemLabel="#{role.roleName eq 'MANAGER' ? 'Προϊστάμενος (MANAGER)' : role.roleName eq 'SECRETARY' ? 'Γραμματεία (SECRETARY)' : 'Υπάλληλος (EMPLOYEE)'}" />
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="dialog-actions" style="padding-top:16px;">
+                            <p:commandButton value="Ακύρωση"
+                                             icon="pi pi-times"
+                                             styleClass="btn-export"
+                                             onclick="PF('roleDialog').hide(); return false;"
+                                             style="margin-right:8px;" />
+                            <p:commandButton value="Αποθήκευση"
+                                             icon="pi pi-save"
+                                             styleClass="btn-approve"
+                                             action="#{secretaryController.saveUserRole()}"
+                                             update=":usersForm:usersTable :usersForm:messages"
+                                             oncomplete="if (!args.validationFailed) PF('roleDialog').hide()" />
+                        </div>
+
+                    </h:panelGroup>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+        <!-- Manage Leave Balances Dialog -->
+        <p:dialog header="Διαχείριση Υπολοίπων Άδειας"
+                  widgetVar="balancesDialog"
+                  modal="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  resizable="false"
+                  appendTo="@(body)"
+                  style="width:560px;">
+            <h:form id="balancesDialogForm">
+                <p:outputPanel id="balancesDialogPanel">
+                    <h:panelGroup rendered="#{not empty secretaryController.selectedUser}">
+
+                        <div class="dialog-employee-info">
+                            <i class="pi pi-user"></i>
+                            #{secretaryController.selectedUser.firstName} #{secretaryController.selectedUser.lastName}
+                        </div>
+
+                        <!-- Current balances -->
+                        <h3 style="font-size:0.95rem; color:var(--blue-dark); font-weight:700; margin-bottom:10px; margin-top:14px;">
+                            Υφιστάμενα Υπόλοιπα
+                        </h3>
+                        <p:dataTable value="#{secretaryController.selectedUserBalances}"
+                                     var="lb"
+                                     emptyMessage="Δεν βρέθηκαν υπόλοιπα αδειών για αυτόν τον χρήστη."
+                                     style="margin-bottom:20px;">
+                            <p:column headerText="Τύπος Άδειας">
+                                #{lb.leaveType}
+                            </p:column>
+                            <p:column headerText="Υπόλοιπο" style="text-align:center; width:120px;">
+                                <span class="fw-bold text-blue">#{lb.balance} ημέρες</span>
+                            </p:column>
+                        </p:dataTable>
+
+                        <div class="section-divider" style="margin:16px 0;"></div>
+
+                        <!-- Update / Add Balance -->
+                        <h3 style="font-size:0.95rem; color:var(--blue-dark); font-weight:700; margin-bottom:12px;">
+                            Ενημέρωση / Προσθήκη Υπολοίπου
+                        </h3>
+                        <div class="ui-fluid" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                            <div>
+                                <p:outputLabel for="leaveTypeSelect" value="Τύπος Άδειας" style="display:block; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-sub); margin-bottom:6px;" />
+                                <p:selectOneMenu id="leaveTypeSelect" value="#{secretaryController.selectedLeaveType}" required="true" requiredMessage="Επιλέξτε τύπο άδειας.">
+                                    <f:selectItem itemLabel="Επιλέξτε τύπο..." itemValue="" noSelectionOption="true" />
+                                    <f:selectItem itemLabel="Κανονική Άδεια" itemValue="Κανονική Άδεια" />
+                                    <f:selectItem itemLabel="Αναρρωτική Άδεια" itemValue="Αναρρωτική Άδεια" />
+                                    <f:selectItem itemLabel="Άδεια άνευ Αποδοχών" itemValue="Άδεια άνευ Αποδοχών" />
+                                    <f:selectItem itemLabel="Γονική Άδεια" itemValue="Γονική Άδεια" />
+                                    <f:selectItem itemLabel="Εκπαιδευτική Άδεια" itemValue="Εκπαιδευτική Άδεια" />
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div>
+                                <p:outputLabel for="balanceValue" value="Νέο Υπόλοιπο (Ημέρες)" style="display:block; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-sub); margin-bottom:6px;" />
+                                <p:spinner id="balanceValue" value="#{secretaryController.newLeaveBalanceValue}" min="0" max="365" required="true" requiredMessage="Εισάγετε ημέρες." />
+                            </div>
+                        </div>
+
+                        <div class="dialog-actions" style="padding-top:16px;">
+                            <p:commandButton value="Κλείσιμο"
+                                             styleClass="btn-export"
+                                             onclick="PF('balancesDialog').hide(); return false;"
+                                             style="margin-right:8px;" />
+                            <p:commandButton value="Ενημέρωση"
+                                             icon="pi pi-check"
+                                             styleClass="btn-primary"
+                                             action="#{secretaryController.saveLeaveBalance()}"
+                                             update="balancesDialogPanel :usersForm:messages" />
+                        </div>
+
+                    </h:panelGroup>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+        <!-- Manage User Manager Dialog -->
+        <p:dialog header="Ορισμός Προϊσταμένου"
+                  widgetVar="managerDialog"
+                  modal="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  resizable="false"
+                  appendTo="@(body)"
+                  style="width:460px;">
+            <h:form id="managerDialogForm">
+                <p:outputPanel id="managerDialogPanel">
+                    <h:panelGroup rendered="#{not empty secretaryController.selectedUser}">
+
+                        <div class="dialog-employee-info">
+                            <i class="pi pi-user"></i>
+                            #{secretaryController.selectedUser.firstName} #{secretaryController.selectedUser.lastName}
+                            <span style="font-size: 0.85rem; color: var(--text-sub); display: block; margin-top: 4px;">
+                                Τρέχων Ρόλος: #{secretaryController.selectedUser.role.roleName eq 'MANAGER' ? 'Προϊστάμενος' : secretaryController.selectedUser.role.roleName eq 'SECRETARY' ? 'Γραμματεία' : 'Υπάλληλος'}
+                            </span>
+                        </div>
+
+                        <div class="dialog-comment-wrap" style="margin-top:20px; margin-bottom:20px;">
+                            <p:outputLabel for="managerSelect" value="Επιλογή Προϊσταμένου" style="display:block; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-sub); margin-bottom:6px;" />
+                            <p:selectOneMenu id="managerSelect" value="#{secretaryController.newManagerId}" style="width:100%;">
+                                <f:selectItem itemLabel="Χωρίς Προϊστάμενο (Clear Manager)" itemValue="" />
+                                <f:selectItems value="#{secretaryController.allManagers}"
+                                               var="mgr"
+                                               itemValue="#{mgr.id}"
+                                               itemLabel="#{mgr.firstName} #{mgr.lastName} (#{mgr.email})"
+                                               itemDisabled="#{mgr.id eq secretaryController.selectedUser.id}" />
+                            </p:selectOneMenu>
+                            
+                            <h:panelGroup rendered="#{secretaryController.selectedUser.role.roleName eq 'MANAGER'}" style="display:block; margin-top:12px;">
+                                <div style="background-color: #fff9db; color: #b28900; border: 1px solid #ffe3e3; border-radius: var(--radius); padding: 10px; font-size: 0.82rem; display: flex; align-items: flex-start; gap: 8px;">
+                                    <i class="pi pi-exclamation-triangle" style="font-size: 1.1rem; margin-top: 2px;"></i>
+                                    <span>
+                                        <strong>Προσοχή:</strong> Ο επιλεγμένος υπάλληλος είναι ο ίδιος Προϊστάμενος. Δεν μπορεί να οριστεί ως προϊστάμενος του εαυτού του (το όνομά του έχει απενεργοποιηθεί στη λίστα).
+                                    </span>
+                                </div>
+                            </h:panelGroup>
+                        </div>
+
+                        <div class="dialog-actions" style="padding-top:16px;">
+                            <p:commandButton value="Ακύρωση"
+                                             icon="pi pi-times"
+                                             styleClass="btn-export"
+                                             onclick="PF('managerDialog').hide(); return false;"
+                                             style="margin-right:8px;" />
+                            <p:commandButton value="Αποθήκευση"
+                                             icon="pi pi-save"
+                                             styleClass="btn-approve"
+                                             action="#{secretaryController.saveUserManager()}"
+                                             update=":usersForm:usersTable :usersForm:messages"
+                                             oncomplete="if (!args.validationFailed) PF('managerDialog').hide()" />
+                        </div>
+
+                    </h:panelGroup>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>
