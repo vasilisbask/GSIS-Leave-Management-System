@@ -5,8 +5,11 @@
 
     <div class="sidebar">
         <!-- Sidebar Brand / Centered Logo -->
-        <div class="sidebar-brand">
+        <div class="sidebar-brand" onclick="toggleSidebar()" title="Κλείσιμο Μενού (Collapse)">
             <h:graphicImage name="images/gsis_logo.png" alt="GSIS Logo" styleClass="sidebar-logo" />
+            <button type="button" class="sidebar-close-btn" aria-label="Close Sidebar">
+                <i class="pi pi-chevron-right"></i>
+            </button>
         </div>
 
         <!-- Sidebar Navigation Drawer -->

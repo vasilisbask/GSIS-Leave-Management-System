@@ -1099,6 +1099,13 @@ body.sidebar-collapsed .sidebar {
     align-items: center;
     border-bottom: 1px solid var(--blue-mid);
     background: var(--blue-light);
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sidebar-brand:hover {
+    background-color: rgba(1, 136, 202, 0.12);
 }
 
 .sidebar-logo {
@@ -1106,6 +1113,38 @@ body.sidebar-collapsed .sidebar {
     width: auto;
     display: block;
     margin: 0 auto;
+    transition: transform 0.2s ease;
+}
+
+.sidebar-brand:hover .sidebar-logo {
+    transform: scale(0.97);
+}
+
+.sidebar-close-btn {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--blue);
+    font-size: 1.15rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+}
+
+.sidebar-brand:hover .sidebar-close-btn {
+    opacity: 1;
+    background-color: rgba(1, 136, 202, 0.15);
+    color: var(--blue-dark);
+    transform: translateY(-50%) scale(1.05);
 }
 
 /* Sidebar Navigation Items */
@@ -1478,4 +1517,24 @@ body.sidebar-collapsed .sidebar {
     margin: 0 !important;
     font-size: 0.85rem !important;
     white-space: nowrap !important;
+}
+
+.download-decision-link {
+    color: var(--blue) !important;
+    font-size: 1.1rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 50% !important;
+    transition: background-color 0.2s, color 0.2s !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    vertical-align: middle !important;
+}
+
+.download-decision-link:hover {
+    background-color: var(--blue-light) !important;
+    color: var(--orange) !important;
 }

@@ -64,6 +64,13 @@
                     </p:selectOneMenu>
 
                 </div>
+                <div class="toolbar-right">
+                    <p:commandButton value="Εξαγωγή σε PDF"
+                                     icon="pi pi-file-pdf"
+                                     styleClass="btn-export"
+                                     ajax="false"
+                                     action="#{employeeController.downloadLeaveHistoryPdf}" />
+                </div>
             </div>
 
             <p:dataTable id="historyTable"
@@ -76,12 +83,12 @@
                          paginatorPosition="bottom"
                          paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="10,30,50"
-                         style="margin-top:0;">
+                         style="margin-top:0; width:100%;">
 
                 <p:column headerText="ΤΥΠΟΣ ΑΔΕΙΑΣ"
                           sortBy="#{leaveReq.leaveType}"
                           headerStyleClass="center-column-header"
-                          style="text-align:center; width:170px;">
+                          style="text-align:center; width:150px; min-width:150px;">
                     <span class="badge badge-pending" style="text-transform:none;">
                         #{leaveReq.leaveType}
                     </span>
@@ -90,7 +97,7 @@
                 <p:column headerText="ΑΠΟ"
                           sortBy="#{leaveReq.startDate}"
                           headerStyleClass="center-column-header"
-                          style="text-align:center; width:120px;">
+                          style="text-align:center; width:100px; min-width:100px;">
                     <h:outputText value="#{leaveReq.startDate}">
                         <f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
                     </h:outputText>
@@ -99,7 +106,7 @@
                 <p:column headerText="ΕΩΣ"
                           sortBy="#{leaveReq.endDate}"
                           headerStyleClass="center-column-header"
-                          style="text-align:center; width:120px;">
+                          style="text-align:center; width:100px; min-width:100px;">
                     <h:outputText value="#{leaveReq.endDate}">
                         <f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
                     </h:outputText>
@@ -108,7 +115,7 @@
                 <p:column headerText="ΗΜΕΡΕΣ"
                           sortBy="#{leaveReq.workingDays}"
                           headerStyleClass="center-column-header"
-                          style="text-align:center; width:90px;">
+                          style="text-align:center; width:80px; min-width:80px;">
                     <span class="fw-bold text-blue">
                         #{leaveReq.workingDays}
                     </span>
@@ -117,23 +124,31 @@
                 <p:column headerText="ΚΑΤΑΣΤΑΣΗ"
                           sortBy="#{leaveReq.status}"
                           headerStyleClass="center-column-header"
-                          style="text-align:center; width:150px;">
-                    <span class="#{leaveReq.status.name() eq 'APPROVED' ? 'badge badge-approved' : leaveReq.status.name() eq 'REJECTED' ? 'badge badge-rejected' : 'badge badge-pending'}"
-                          style="text-transform:none;">
-
-                        <i class="pi #{leaveReq.status.name() eq 'APPROVED' ? 'pi-check' : leaveReq.status.name() eq 'REJECTED' ? 'pi-times' : 'pi-clock'}"></i>
-
-                        #{leaveReq.status.displayName}
-                    </span>
+                          style="text-align:center; width:170px; min-width:170px;">
+                    <div style="display:inline-flex; align-items:center; justify-content:center; gap:8px; vertical-align:middle;">
+                        <span class="#{leaveReq.status.name() eq 'APPROVED' ? 'badge badge-approved' : leaveReq.status.name() eq 'REJECTED' ? 'badge badge-rejected' : 'badge badge-pending'}"
+                              style="text-transform:none; vertical-align:middle;">
+                            <i class="pi #{leaveReq.status.name() eq 'APPROVED' ? 'pi-check' : leaveReq.status.name() eq 'REJECTED' ? 'pi-times' : 'pi-clock'}"></i>
+                            #{leaveReq.status.displayName}
+                        </span>
+                        <h:panelGroup rendered="#{leaveReq.status.name() eq 'APPROVED'}">
+                            <p:commandLink ajax="false"
+                                           action="#{employeeController.downloadLeaveCertificate(leaveReq)}"
+                                           title="Λήψη Απόφασης"
+                                           styleClass="download-decision-link">
+                                <i class="pi pi-download"></i>
+                            </p:commandLink>
+                        </h:panelGroup>
+                    </div>
                 </p:column>
 
                 <p:column headerText="ΑΙΤΙΟΛΟΓΗΣΗ"
                           headerStyleClass="center-column-header"
-                          style="text-align:center; min-width:180px;">
+                          style="text-align:center; width:180px; min-width:180px;">
                     <h:panelGroup rendered="#{not empty leaveReq.reason}"
                                   layout="block"
                                   style="display:flex; justify-content:center; align-items:center; width:100%;">
-                        <span style="color:var(--text-sub); font-size:0.875rem;">
+                        <span style="color:var(--text-sub); font-size:0.875rem; white-space:normal; overflow-wrap:anywhere;">
                             #{leaveReq.reason}
                         </span>
                     </h:panelGroup>
@@ -147,7 +162,7 @@
 
                 <p:column headerText="ΑΡΧΕΙΟ"
                           headerStyleClass="center-column-header"
-                          style="width:180px; text-align:center;">
+                          style="width:140px; min-width:140px; text-align:center;">
                     <h:panelGroup rendered="#{leaveReq.hasAttachment()}"
                                   layout="block"
                                   style="display:flex; justify-content:center; align-items:center; width:100%;">
@@ -169,7 +184,7 @@
 
                 <p:column headerText="ΣΧΟΛΙΟ ΠΡΟΪΣΤΑΜΕΝΟΥ"
                           headerStyleClass="center-column-header"
-                          style="width:220px; min-width:220px; text-align:center;">
+                          style="width:200px; min-width:200px; text-align:center;">
                     <h:panelGroup rendered="#{not empty leaveReq.managerComment}"
                                   layout="block"
                                   style="display:flex; justify-content:center; align-items:center; width:100%;">
@@ -189,6 +204,8 @@
                         <span style="color:var(--text-sub);">-</span>
                     </h:panelGroup>
                 </p:column>
+
+
 
             </p:dataTable>
         </h:form>

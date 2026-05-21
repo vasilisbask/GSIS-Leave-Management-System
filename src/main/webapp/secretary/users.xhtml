@@ -26,11 +26,17 @@
             <p:growl id="messages" showDetail="true" life="4000" />
 
             <!-- Page Header -->
-            <div class="page-header">
+            <div class="page-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                 <h2>
                     <i class="pi pi-users"></i>
                     Διαχείριση Χρηστών &amp; Υπολοίπων
                 </h2>
+                <!-- Info button -->
+                <p:commandLink onclick="PF('idInfoDialog').show(); return false;" 
+                               style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background-color: var(--blue-light); color: var(--blue); border: 1px solid rgba(1, 136, 202, 0.2); transition: all 0.2s; cursor: pointer; text-decoration: none; margin-right: 10px;"
+                               title="Πληροφορίες Αναγνωριστικών">
+                    <i class="pi pi-info-circle" style="font-size: 1.2rem;"></i>
+                </p:commandLink>
             </div>
 
             <!-- Toolbar containing Search Input -->
@@ -72,24 +78,24 @@
 
                 <p:column headerText="ID"
                           headerStyleClass="center-column-header"
-                          style="width:70px; text-align:center;">
-                    <span style="font-family: monospace; color:var(--text-sub); font-size:0.875rem;">
-                        #{user.id}
+                          style="width:85px; text-align:center;">
+                    <span style="font-family: monospace; color:var(--text-sub); font-size:0.875rem; font-weight: 600;">
+                        EMP-#{user.id}
                     </span>
                 </p:column>
 
                 <p:column headerText="ΟΝΟΜΑΤΕΠΩΝΥΜΟ"
-                          headerStyleClass="center-column-header"
-                          style="min-width:240px; text-align:center;">
-                    <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
-                        <span style="width:32px; height:32px; border-radius:50%;
+                          style="min-width:240px; text-align:left; padding-left: 20px;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="width:36px; height:36px; border-radius:50%;
                                      background:var(--blue-light); color:var(--blue);
                                      display:inline-flex; align-items:center; justify-content:center;
-                                     font-weight:700; font-size:0.85rem; flex-shrink:0;">
+                                     font-weight:700; font-size:0.9rem; flex-shrink:0;
+                                     box-shadow: 0 2px 4px rgba(0,0,0,0.06);">
                             #{not empty user.firstName ? user.firstName.substring(0,1) : ''}#{not empty user.lastName ? user.lastName.substring(0,1) : ''}
                         </span>
                         <div>
-                            <span class="fw-bold" style="display:block; font-size:0.9rem;">
+                            <span class="fw-bold" style="display:block; font-size:0.95rem; color:var(--text-main);">
                                 #{user.firstName} #{user.lastName}
                             </span>
                         </div>
@@ -99,7 +105,7 @@
                 <p:column headerText="EMAIL"
                           headerStyleClass="center-column-header"
                           style="min-width:200px; text-align:center;">
-                    <span style="color:var(--text-sub); font-size:0.875rem;">
+                    <span style="color:var(--text-sub); font-size:0.9rem; display:block; text-align:center;">
                         #{user.email}
                     </span>
                 </p:column>
@@ -130,12 +136,11 @@
                 </p:column>
 
                 <p:column headerText="ΠΡΟΪΣΤΑΜΕΝΟΣ"
-                          headerStyleClass="center-column-header"
-                          style="min-width:180px; text-align:center;">
+                          style="min-width:180px; text-align:left; padding-left: 20px;">
                     <h:panelGroup rendered="#{not empty user.manager}"
                                   layout="block"
-                                  style="display:flex; justify-content:center; align-items:center; width:100%;">
-                        <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                                  style="display:flex; align-items:center; width:100%;">
+                        <div style="display:flex; align-items:center; gap:8px;">
                             <i class="pi pi-user" style="color:var(--text-muted); font-size:0.9rem;" />
                             <span style="font-size:0.9rem; color:var(--text-main);">
                                 #{user.manager.firstName} #{user.manager.lastName}
@@ -145,8 +150,8 @@
 
                     <h:panelGroup rendered="#{empty user.manager}"
                                   layout="block"
-                                  style="display:flex; justify-content:center; align-items:center; width:100%;">
-                        <span style="color:var(--text-muted); font-style:italic; font-size:0.875rem;">-</span>
+                                  style="display:flex; align-items:center; width:100%;">
+                        <span style="color:var(--text-muted); font-style:italic; font-size:0.875rem; padding-left: 10px;">-</span>
                     </h:panelGroup>
                 </p:column>
 
@@ -404,6 +409,60 @@
 
                     </h:panelGroup>
                 </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+        <!-- Information Dialog for Identifiers -->
+        <p:dialog header="Πληροφορίες Αναγνωριστικών (IDs)"
+                  widgetVar="idInfoDialog"
+                  modal="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  resizable="false"
+                  draggable="false"
+                  appendTo="@(body)"
+                  onShow="centerDialog('idInfoDialog')"
+                  style="max-width:500px; width:90%;">
+            <h:form id="idInfoForm">
+                <div style="padding: 10px 5px;">
+                    <p style="margin-top:0; color:var(--text-main); font-size:0.95rem; line-height:1.5;">
+                        Στο σύστημα LMS της Γ.Γ.Π.Σ. χρησιμοποιούνται ειδικά προθέματα για τα αναγνωριστικά (IDs) με σκοπό την άμεση αναγνώριση του είδους της κάθε εγγραφής:
+                    </p>
+                    
+                    <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 12px;">
+                        <!-- EMP Prefix -->
+                        <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: rgba(1, 136, 202, 0.06); border-left: 4px solid var(--blue); border-radius: 4px;">
+                            <span style="font-family: monospace; font-weight: bold; color: var(--blue); font-size: 1.1rem; padding: 2px 6px; background: rgba(1, 136, 202, 0.12); border-radius: 4px; min-width: 75px; text-align: center; box-sizing: border-box;">
+                                EMP-X
+                            </span>
+                            <div>
+                                <strong style="color: var(--blue-dark); font-size: 0.95rem; display: block; margin-bottom: 2px;">Αναγνωριστικό Υπαλλήλου (Employee ID)</strong>
+                                <span style="color: var(--text-sub); font-size: 0.85rem; line-height: 1.4;">
+                                    Αντιπροσωπεύει το μοναδικό αναγνωριστικό ενός χρήστη/υπαλλήλου στο σύστημα. Χρησιμοποιείται στη διαχείριση προσωπικού, αλλαγή ρόλων, ανάθεση προϊσταμένων και ενημέρωση υπολοίπων.
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- LVR Prefix -->
+                        <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: rgba(230, 81, 0, 0.06); border-left: 4px solid var(--orange); border-radius: 4px;">
+                            <span style="font-family: monospace; font-weight: bold; color: var(--orange); font-size: 1.1rem; padding: 2px 6px; background: rgba(230, 81, 0, 0.12); border-radius: 4px; min-width: 75px; text-align: center; box-sizing: border-box;">
+                                LVR-X
+                            </span>
+                            <div>
+                                <strong style="color: #c66900; font-size: 0.95rem; display: block; margin-bottom: 2px;">Αναγνωριστικό Αιτήματος Άδειας (Leave Request ID)</strong>
+                                <span style="color: var(--text-sub); font-size: 0.85rem; line-height: 1.4;">
+                                    Αντιπροσωπεύει μια συγκεκριμένη αίτηση άδειας που έχει υποβληθεί. Χρησιμοποιείται κατά την έγκριση, απόρριψη και γενικά στις καταγραφές του Αρχείου Ελέγχου (Audit Log) για πράξεις επί αδειών.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: right;">
+                        <p:commandButton value="Κλείσιμο"
+                                         styleClass="btn-primary"
+                                         onclick="PF('idInfoDialog').hide(); return false;" />
+                    </div>
+                </div>
             </h:form>
         </p:dialog>
 

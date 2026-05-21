@@ -55,6 +55,13 @@
             <artifactId>angus-mail</artifactId>
             <version>2.0.3</version>
         </dependency>
+
+        <!-- iText PDF library for formal document exports -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.13.3</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -80,6 +87,12 @@
                     <payaraVersion>6.2024.6</payaraVersion>
                     <deployWar>true</deployWar>
                     <contextRoot>/leave</contextRoot>
+                    <commandLineOptions>
+                        <option>
+                            <key>--sslport</key>
+                            <value>8443</value>
+                        </option>
+                    </commandLineOptions>
                 </configuration>
             </plugin>
 

@@ -23,6 +23,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.company.lms.service.PdfExportService;
+
 @Named
 @ViewScoped
 public class EmployeeController implements Serializable {
@@ -32,6 +34,9 @@ public class EmployeeController implements Serializable {
 
     @Inject
     private LoginController loginController;
+
+    @Inject
+    private PdfExportService pdfService;
 
     private Employee employee;
     private List<LeaveRequest> leaveHistory;
@@ -190,6 +195,38 @@ public class EmployeeController implements Serializable {
                     return matchesStatus && matchesLeaveType;
                 })
                 .toList();
+    }
+
+    public void downloadLeaveCertificate(LeaveRequest request) {
+        if (request == null) return;
+        byte[] pdfBytes = pdfService.generateLeaveCertificate(request);
+        downloadPdfFile(pdfBytes, "Leave_Certificate_" + request.getId() + ".pdf");
+    }
+
+    public void downloadLeaveHistoryPdf() {
+        if (employee == null) return;
+        byte[] pdfBytes = pdfService.generateLeaveHistoryReport(employee, leaveHistory, leaveBalances);
+        downloadPdfFile(pdfBytes, "Leave_History_" + employee.getLastName() + ".pdf");
+    }
+
+    private void downloadPdfFile(byte[] pdfBytes, String filename) {
+        if (pdfBytes == null || pdfBytes.length == 0) return;
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        jakarta.faces.context.ExternalContext externalContext = facesContext.getExternalContext();
+
+        externalContext.responseReset();
+        externalContext.setResponseContentType("application/pdf");
+        externalContext.setResponseHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+        externalContext.setResponseContentLength(pdfBytes.length);
+
+        try (java.io.OutputStream outputStream = externalContext.getResponseOutputStream()) {
+            outputStream.write(pdfBytes);
+            outputStream.flush();
+            facesContext.responseComplete();
+        } catch (IOException e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Σφάλμα", "Αδυναμία λήψης του αρχείου PDF: " + e.getMessage()));
+        }
     }
 
     public LocalDate getToday() { return LocalDate.now(); }

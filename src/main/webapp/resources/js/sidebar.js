@@ -9,13 +9,21 @@ function toggleSidebar() {
 
 // Mobile sidebar support (overlay backdrop click to close)
 document.addEventListener('DOMContentLoaded', function() {
-    // Restore collapse state on page load
     const isCollapsed = localStorage.getItem('sidebar-collapsed');
-    if (isCollapsed === 'true') {
-        document.body.classList.add('sidebar-collapsed');
-    } else if (isCollapsed === 'false') {
+    if (isCollapsed === 'false') {
         document.body.classList.remove('sidebar-collapsed');
+    } else {
+        document.body.classList.add('sidebar-collapsed');
     }
+    
+    // Close sidebar (collapse) when clicking any navigation link inside the sidebar
+    const sidebarLinks = document.querySelectorAll('.sidebar-nav a, .sidebar-footer a');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            localStorage.setItem('sidebar-collapsed', 'true');
+            document.body.classList.add('sidebar-collapsed');
+        });
+    });
     
     // Add backdrop for mobile screens
     if (!document.querySelector('.sidebar-backdrop')) {

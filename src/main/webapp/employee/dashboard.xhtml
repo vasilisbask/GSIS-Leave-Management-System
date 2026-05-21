@@ -155,7 +155,11 @@
                                                  value="#{employeeController.reason}"
                                                  rows="4"
                                                  style="width:100%;"
+                                                 maxlength="250"
+                                                 counter="reasonCounter"
+                                                 counterTemplate="Υπολείπονται {0} χαρακτήρες."
                                                  placeholder="Προσθέστε αιτιολόγηση..." />
+                                <h:outputText id="reasonCounter" style="display:block; text-align:right; font-size:0.8rem; color:var(--text-sub); margin-top:4px;" />
                             </div>
 
                             <div style="grid-column:1 / -1;">

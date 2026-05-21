@@ -19,6 +19,8 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+import com.company.lms.service.PdfExportService;
+
 @Named
 @ViewScoped
 public class AuditController implements Serializable {
@@ -27,7 +29,13 @@ public class AuditController implements Serializable {
     private LeaveRepository leaveRepo;
 
     @Inject
+    private com.company.lms.repository.EmployeeRepository employeeRepo;
+
+    @Inject
     private AuditService auditService;
+
+    @Inject
+    private PdfExportService pdfService;
 
     private List<AuditLog> auditLogs;
 
@@ -88,11 +96,16 @@ public class AuditController implements Serializable {
     }
 
     public String exportTargetId(AuditLog log) {
-        if (log == null || log.getTargetId() == null) {
+        if (log == null || log.getTargetId() == null || log.getAction() == null) {
             return "";
         }
 
-        return "AUD-" + log.getTargetId();
+        String action = log.getAction().toUpperCase();
+        if (action.contains("ROLE") || action.contains("BALANCE") || action.contains("MANAGER")) {
+            return "EMP-" + log.getTargetId();
+        } else {
+            return "LVR-" + log.getTargetId();
+        }
     }
 
     public String exportComment(AuditLog log) {
@@ -177,6 +190,33 @@ public class AuditController implements Serializable {
         }
     }
 
+    public void exportPdf() {
+        byte[] pdfBytes = pdfService.generateAuditLogReport(auditLogs);
+        
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+
+        String fileName = "audit_logs_" +
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) +
+                ".pdf";
+
+        externalContext.responseReset();
+        externalContext.setResponseContentType("application/pdf");
+        externalContext.setResponseHeader(
+                "Content-Disposition",
+                "attachment; filename=\"" + fileName + "\""
+        );
+        externalContext.setResponseContentLength(pdfBytes.length);
+
+        try (OutputStream outputStream = externalContext.getResponseOutputStream()) {
+            outputStream.write(pdfBytes);
+            outputStream.flush();
+            facesContext.responseComplete();
+        } catch (IOException e) {
+            throw new RuntimeException("Σφάλμα κατά την εξαγωγή PDF.", e);
+        }
+    }
+
     private String escapeHtml(String value) {
         if (value == null) {
             return "";
@@ -191,17 +231,20 @@ public class AuditController implements Serializable {
     }
 
     public Employee getTargetEmployee(AuditLog log) {
-        if (log == null || log.getTargetId() == null) {
+        if (log == null || log.getTargetId() == null || log.getAction() == null) {
             return null;
         }
 
-        LeaveRequest request = leaveRepo.findByIdWithEmployee(log.getTargetId());
-
-        if (request == null) {
-            return null;
+        String action = log.getAction().toUpperCase();
+        if (action.contains("ROLE") || action.contains("BALANCE") || action.contains("MANAGER")) {
+            return employeeRepo.findById(log.getTargetId());
+        } else {
+            LeaveRequest request = leaveRepo.findByIdWithEmployee(log.getTargetId());
+            if (request == null) {
+                return null;
+            }
+            return request.getEmployee();
         }
-
-        return request.getEmployee();
     }
 
     public String exportTargetEmployee(AuditLog log) {
