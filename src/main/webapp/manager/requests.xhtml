@@ -7,6 +7,21 @@
 
     <ui:define name="content">
 
+        <h:outputScript>
+            function centerDialog(widgetVarName) {
+            var dialog = PF(widgetVarName);
+
+            if (dialog) {
+            dialog.jq.css({
+            left: '',
+            top: ''
+            });
+
+            dialog.initPosition();
+            }
+            }
+        </h:outputScript>
+
         <h:form id="requestsForm">
             <p:growl id="messages" showDetail="true" life="4000" />
 
@@ -28,7 +43,7 @@
                                  styleClass="btn-approve"
                                  disabled="#{empty managerController.selectedRequests}"
                                  process="@this"
-                                 update=":bulkActionForm:bulkActionPanel"
+                                 update=":bulkActionDialogComponent"
                                  oncomplete="PF('bulkActionDialog').show()">
                     <f:setPropertyActionListener value="APPROVE" target="#{managerController.pendingAction}" />
                     <f:setPropertyActionListener value="" target="#{managerController.managerComment}" />
@@ -39,7 +54,7 @@
                                  styleClass="btn-reject"
                                  disabled="#{empty managerController.selectedRequests}"
                                  process="@this"
-                                 update=":bulkActionForm:bulkActionPanel"
+                                 update=":bulkActionDialogComponent"
                                  oncomplete="PF('bulkActionDialog').show()">
                     <f:setPropertyActionListener value="REJECT" target="#{managerController.pendingAction}" />
                     <f:setPropertyActionListener value="" target="#{managerController.managerComment}" />
@@ -59,7 +74,7 @@
                          paginatorPosition="bottom"
                          paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="10,30,50"
-                         style="margin-top:0;">
+                         style="margin-top:0; width:100%;">
 
                 <p:ajax event="rowSelect" update="@form" />
                 <p:ajax event="rowUnselect" update="@form" />
@@ -74,16 +89,19 @@
                 <p:column headerText="ΥΠΑΛΛΗΛΟΣ"
                           sortBy="#{leaveReq.employee.lastName}"
                           headerStyleClass="center-column-header"
-                          style="min-width:220px; text-align:center;">
-                    <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
-                        <span style="width:32px; height:32px; border-radius:50%;
+                          style="width:150px; min-width:150px; text-align:center;">
+                    <div style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%;">
+                        <span style="width:32px; min-width:32px; height:32px; border-radius:50%;
                                      background:var(--blue-light); color:var(--blue);
                                      display:inline-flex; align-items:center; justify-content:center;
                                      font-weight:700; font-size:0.85rem; flex-shrink:0;">
                             #{not empty leaveReq.employee.firstName ? leaveReq.employee.firstName.substring(0,1) : ''}#{not empty leaveReq.employee.lastName ? leaveReq.employee.lastName.substring(0,1) : ''}
                         </span>
-                        <span class="fw-bold">
-                            #{leaveReq.employee.firstName} #{leaveReq.employee.lastName}
+
+                        <span class="fw-bold"
+                              style="display:flex; flex-direction:column; align-items:flex-start; line-height:1.35; text-align:left;">
+                            <span>#{leaveReq.employee.firstName}</span>
+                            <span>#{leaveReq.employee.lastName}</span>
                         </span>
                     </div>
                 </p:column>
@@ -91,7 +109,7 @@
                 <p:column headerText="ΤΥΠΟΣ ΑΔΕΙΑΣ"
                           sortBy="#{leaveReq.leaveType}"
                           headerStyleClass="center-column-header"
-                          style="text-align:center;">
+                          style="text-align:center; width:150px; min-width:150px;">
                     <span class="badge badge-pending" style="text-transform:none;">
                         #{leaveReq.leaveType}
                     </span>
@@ -100,7 +118,7 @@
                 <p:column headerText="ΑΠΟ"
                           sortBy="#{leaveReq.startDate}"
                           headerStyleClass="center-column-header"
-                          style="text-align:center;">
+                          style="text-align:center; width:100px; min-width:100px;">
                     <h:outputText value="#{leaveReq.startDate}">
                         <f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
                     </h:outputText>
@@ -109,7 +127,7 @@
                 <p:column headerText="ΕΩΣ"
                           sortBy="#{leaveReq.endDate}"
                           headerStyleClass="center-column-header"
-                          style="text-align:center;">
+                          style="text-align:center; width:100px; min-width:100px;">
                     <h:outputText value="#{leaveReq.endDate}">
                         <f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
                     </h:outputText>
@@ -118,7 +136,7 @@
                 <p:column headerText="ΗΜΕΡΕΣ"
                           sortBy="#{leaveReq.workingDays}"
                           headerStyleClass="center-column-header"
-                          style="text-align:center; width:80px;">
+                          style="text-align:center; width:80px; min-width:80px;">
                     <span class="fw-bold text-blue">
                         #{leaveReq.workingDays}
                     </span>
@@ -126,12 +144,12 @@
 
                 <p:column headerText="ΑΙΤΙΟΛΟΓΗΣΗ"
                           headerStyleClass="center-column-header"
-                          style="text-align:center; min-width:180px;">
+                          style="text-align:center; width:110px; min-width:110px;">
 
                     <h:panelGroup rendered="#{not empty leaveReq.reason}"
                                   layout="block"
                                   style="display:flex; justify-content:center; align-items:center; width:100%;">
-                        <span style="color:var(--text-sub); font-size:0.875rem;">
+                        <span style="color:var(--text-sub); font-size:0.875rem; white-space:normal; overflow-wrap:anywhere;">
                             #{leaveReq.reason}
                         </span>
                     </h:panelGroup>
@@ -146,7 +164,7 @@
 
                 <p:column headerText="ΑΡΧΕΙΟ"
                           headerStyleClass="center-column-header"
-                          style="width:180px; text-align:center;">
+                          style="width:140px; min-width:140px; text-align:center;">
                     <h:panelGroup rendered="#{leaveReq.hasAttachment()}"
                                   layout="block"
                                   style="display:flex; justify-content:center; align-items:center; width:100%;">
@@ -169,11 +187,11 @@
 
                 <p:column headerText="ΕΝΕΡΓΕΙΕΣ"
                           headerStyleClass="center-column-header"
-                          style="width:290px; text-align:center;">
-                    <div class="table-actions">
+                          style="width:200px; min-width:200px; text-align:center;">
+                    <div class="compact-table-actions">
                         <p:commandButton icon="pi pi-check"
                                          value="Έγκριση"
-                                         styleClass="btn-approve"
+                                         styleClass="btn-approve compact-action-button"
                                          update=":dialogForm:actionDialogPanel"
                                          oncomplete="PF('actionDialog').show()">
                             <f:setPropertyActionListener value="#{leaveReq}" target="#{managerController.selectedRequest}" />
@@ -182,7 +200,7 @@
 
                         <p:commandButton icon="pi pi-times"
                                          value="Απόρριψη"
-                                         styleClass="btn-reject"
+                                         styleClass="btn-reject compact-action-button"
                                          update=":dialogForm:actionDialogPanel"
                                          oncomplete="PF('actionDialog').show()">
                             <f:setPropertyActionListener value="#{leaveReq}" target="#{managerController.selectedRequest}" />
@@ -200,7 +218,9 @@
                   showEffect="fade"
                   hideEffect="fade"
                   resizable="false"
+                  draggable="false"
                   appendTo="@(body)"
+                  onShow="centerDialog('actionDialog')"
                   style="width:480px;">
 
             <h:form id="dialogForm">
@@ -279,13 +299,16 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="#{managerController.pendingAction eq 'APPROVE' ? 'Μαζική Έγκριση Αιτημάτων' : 'Μαζική Απόρριψη Αιτημάτων'}"
+        <p:dialog id="bulkActionDialogComponent"
+                  header="#{managerController.pendingAction eq 'APPROVE' ? 'Μαζική Έγκριση Αιτημάτων' : 'Μαζική Απόρριψη Αιτημάτων'}"
                   widgetVar="bulkActionDialog"
                   modal="true"
                   showEffect="fade"
                   hideEffect="fade"
                   resizable="false"
+                  draggable="false"
                   appendTo="@(body)"
+                  onShow="centerDialog('bulkActionDialog')"
                   style="width:480px;">
 
             <h:form id="bulkActionForm">

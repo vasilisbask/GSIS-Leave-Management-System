@@ -7,6 +7,21 @@
 
     <ui:define name="content">
 
+        <h:outputScript>
+            function centerDialog(widgetVarName) {
+            var dialog = PF(widgetVarName);
+
+            if (dialog) {
+            dialog.jq.css({
+            left: '',
+            top: ''
+            });
+
+            dialog.initPosition();
+            }
+            }
+        </h:outputScript>
+
         <h:form id="employeeHistoryForm">
             <p:growl id="messages" showDetail="true" life="4000" />
 
@@ -93,12 +108,12 @@
                             #{leaveReq.reason}
                         </span>
                     </h:panelGroup>
+
                     <h:panelGroup rendered="#{empty leaveReq.reason}"
                                   layout="block"
                                   style="display:flex; justify-content:center; align-items:center; width:100%;">
                         <span style="color:var(--text-sub);">-</span>
                     </h:panelGroup>
-
                 </p:column>
 
                 <p:column headerText="ΑΡΧΕΙΟ"
@@ -155,7 +170,9 @@
                   showEffect="fade"
                   hideEffect="fade"
                   resizable="false"
+                  draggable="false"
                   appendTo="@(body)"
+                  onShow="centerDialog('commentDialog')"
                   style="width:460px;">
 
             <h:form id="commentDialogForm">
