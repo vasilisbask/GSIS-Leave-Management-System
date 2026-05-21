@@ -7,6 +7,21 @@
 
     <ui:define name="content">
 
+        <h:outputScript>
+            function centerDialog(widgetVarName) {
+            var dialog = PF(widgetVarName);
+
+            if (dialog) {
+            dialog.jq.css({
+            left: '',
+            top: ''
+            });
+
+            dialog.initPosition();
+            }
+            }
+        </h:outputScript>
+
         <h:form id="usersForm">
             <p:growl id="messages" showDetail="true" life="4000" />
 
@@ -55,14 +70,18 @@
                          rowsPerPageTemplate="10,20,50"
                          emptyMessage="Δεν βρέθηκαν χρήστες που να αντιστοιχούν στα κριτήρια.">
 
-                <p:column headerText="ID" style="width:70px; text-align:center;">
+                <p:column headerText="ID"
+                          headerStyleClass="center-column-header"
+                          style="width:70px; text-align:center;">
                     <span style="font-family: monospace; color:var(--text-sub); font-size:0.875rem;">
                         #{user.id}
                     </span>
                 </p:column>
 
-                <p:column headerText="Ονοματεπωνυμο" style="min-width:240px;">
-                    <div style="display:flex; align-items:center; gap:10px;">
+                <p:column headerText="ΟΝΟΜΑΤΕΠΩΝΥΜΟ"
+                          headerStyleClass="center-column-header"
+                          style="min-width:240px; text-align:center;">
+                    <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
                         <span style="width:32px; height:32px; border-radius:50%;
                                      background:var(--blue-light); color:var(--blue);
                                      display:inline-flex; align-items:center; justify-content:center;
@@ -77,25 +96,31 @@
                     </div>
                 </p:column>
 
-                <p:column headerText="Email" style="min-width:200px;">
+                <p:column headerText="EMAIL"
+                          headerStyleClass="center-column-header"
+                          style="min-width:200px; text-align:center;">
                     <span style="color:var(--text-sub); font-size:0.875rem;">
                         #{user.email}
                     </span>
                 </p:column>
 
-                <p:column headerText="Ρολος" style="width:160px; text-align:center;">
+                <p:column headerText="ΡΟΛΟΣ"
+                          headerStyleClass="center-column-header"
+                          style="width:160px; text-align:center;">
                     <h:panelGroup rendered="#{user.role.roleName eq 'MANAGER'}">
                         <span class="badge badge-approved" style="text-transform:none;">
                             <i class="pi pi-shield"></i>
                             Προϊστάμενος
                         </span>
                     </h:panelGroup>
+
                     <h:panelGroup rendered="#{user.role.roleName eq 'SECRETARY'}">
                         <span class="badge badge-pending" style="text-transform:none;">
                             <i class="pi pi-bookmark"></i>
                             Γραμματεία
                         </span>
                     </h:panelGroup>
+
                     <h:panelGroup rendered="#{user.role.roleName eq 'EMPLOYEE'}">
                         <span class="badge" style="text-transform:none; background:#f0f4f8; color:#4a5a6a; border:1px solid #dde5ed;">
                             <i class="pi pi-user"></i>
@@ -104,21 +129,30 @@
                     </h:panelGroup>
                 </p:column>
 
-                <p:column headerText="Προισταμενος" style="min-width:180px;">
-                    <h:panelGroup rendered="#{not empty user.manager}">
-                        <div style="display:flex; align-items:center; gap:8px;">
+                <p:column headerText="ΠΡΟΪΣΤΑΜΕΝΟΣ"
+                          headerStyleClass="center-column-header"
+                          style="min-width:180px; text-align:center;">
+                    <h:panelGroup rendered="#{not empty user.manager}"
+                                  layout="block"
+                                  style="display:flex; justify-content:center; align-items:center; width:100%;">
+                        <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
                             <i class="pi pi-user" style="color:var(--text-muted); font-size:0.9rem;" />
                             <span style="font-size:0.9rem; color:var(--text-main);">
                                 #{user.manager.firstName} #{user.manager.lastName}
                             </span>
                         </div>
                     </h:panelGroup>
-                    <h:panelGroup rendered="#{empty user.manager}">
+
+                    <h:panelGroup rendered="#{empty user.manager}"
+                                  layout="block"
+                                  style="display:flex; justify-content:center; align-items:center; width:100%;">
                         <span style="color:var(--text-muted); font-style:italic; font-size:0.875rem;">-</span>
                     </h:panelGroup>
                 </p:column>
 
-                <p:column headerText="Ενεργειες" style="width:440px; text-align:center;">
+                <p:column headerText="ΕΝΕΡΓΕΙΕΣ"
+                          headerStyleClass="center-column-header"
+                          style="width:440px; text-align:center;">
                     <div class="table-actions">
                         <p:commandButton icon="pi pi-user-edit"
                                          value="Αλλαγή Ρόλου"
@@ -154,20 +188,27 @@
                   showEffect="fade"
                   hideEffect="fade"
                   resizable="false"
+                  draggable="false"
                   appendTo="@(body)"
+                  onShow="centerDialog('roleDialog')"
                   style="width:420px;">
             <h:form id="roleDialogForm">
                 <p:outputPanel id="roleDialogPanel">
                     <h:panelGroup rendered="#{not empty secretaryController.selectedUser}">
-                        
+
                         <div class="dialog-employee-info">
                             <i class="pi pi-user"></i>
                             #{secretaryController.selectedUser.firstName} #{secretaryController.selectedUser.lastName}
                         </div>
 
                         <div class="dialog-comment-wrap" style="margin-top:14px; margin-bottom:20px;">
-                            <p:outputLabel for="roleSelect" value="Επιλογή Νέου Ρόλου" style="display:block; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-sub); margin-bottom:6px;" />
-                            <p:selectOneMenu id="roleSelect" value="#{secretaryController.newRoleName}" style="width:100%;">
+                            <p:outputLabel for="roleSelect"
+                                           value="Επιλογή Νέου Ρόλου"
+                                           style="display:block; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-sub); margin-bottom:6px;" />
+
+                            <p:selectOneMenu id="roleSelect"
+                                             value="#{secretaryController.newRoleName}"
+                                             style="width:100%;">
                                 <f:selectItems value="#{secretaryController.allRoles}"
                                                var="role"
                                                itemValue="#{role.roleName}"
@@ -181,6 +222,7 @@
                                              styleClass="btn-export"
                                              onclick="PF('roleDialog').hide(); return false;"
                                              style="margin-right:8px;" />
+
                             <p:commandButton value="Αποθήκευση"
                                              icon="pi pi-save"
                                              styleClass="btn-approve"
@@ -201,7 +243,9 @@
                   showEffect="fade"
                   hideEffect="fade"
                   resizable="false"
+                  draggable="false"
                   appendTo="@(body)"
+                  onShow="centerDialog('balancesDialog')"
                   style="width:560px;">
             <h:form id="balancesDialogForm">
                 <p:outputPanel id="balancesDialogPanel">
@@ -216,14 +260,20 @@
                         <h3 style="font-size:0.95rem; color:var(--blue-dark); font-weight:700; margin-bottom:10px; margin-top:14px;">
                             Υφιστάμενα Υπόλοιπα
                         </h3>
+
                         <p:dataTable value="#{secretaryController.selectedUserBalances}"
                                      var="lb"
                                      emptyMessage="Δεν βρέθηκαν υπόλοιπα αδειών για αυτόν τον χρήστη."
                                      style="margin-bottom:20px;">
-                            <p:column headerText="Τύπος Άδειας">
+                            <p:column headerText="Τύπος Άδειας"
+                                      headerStyleClass="center-column-header"
+                                      style="text-align:center;">
                                 #{lb.leaveType}
                             </p:column>
-                            <p:column headerText="Υπόλοιπο" style="text-align:center; width:120px;">
+
+                            <p:column headerText="Υπόλοιπο"
+                                      headerStyleClass="center-column-header"
+                                      style="text-align:center; width:120px;">
                                 <span class="fw-bold text-blue">#{lb.balance} ημέρες</span>
                             </p:column>
                         </p:dataTable>
@@ -234,10 +284,17 @@
                         <h3 style="font-size:0.95rem; color:var(--blue-dark); font-weight:700; margin-bottom:12px;">
                             Ενημέρωση / Προσθήκη Υπολοίπου
                         </h3>
+
                         <div class="ui-fluid" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
                             <div>
-                                <p:outputLabel for="leaveTypeSelect" value="Τύπος Άδειας" style="display:block; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-sub); margin-bottom:6px;" />
-                                <p:selectOneMenu id="leaveTypeSelect" value="#{secretaryController.selectedLeaveType}" required="true" requiredMessage="Επιλέξτε τύπο άδειας.">
+                                <p:outputLabel for="leaveTypeSelect"
+                                               value="Τύπος Άδειας"
+                                               style="display:block; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-sub); margin-bottom:6px;" />
+
+                                <p:selectOneMenu id="leaveTypeSelect"
+                                                 value="#{secretaryController.selectedLeaveType}"
+                                                 required="true"
+                                                 requiredMessage="Επιλέξτε τύπο άδειας.">
                                     <f:selectItem itemLabel="Επιλέξτε τύπο..." itemValue="" noSelectionOption="true" />
                                     <f:selectItem itemLabel="Κανονική Άδεια" itemValue="Κανονική Άδεια" />
                                     <f:selectItem itemLabel="Αναρρωτική Άδεια" itemValue="Αναρρωτική Άδεια" />
@@ -248,8 +305,16 @@
                             </div>
 
                             <div>
-                                <p:outputLabel for="balanceValue" value="Νέο Υπόλοιπο (Ημέρες)" style="display:block; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-sub); margin-bottom:6px;" />
-                                <p:spinner id="balanceValue" value="#{secretaryController.newLeaveBalanceValue}" min="0" max="365" required="true" requiredMessage="Εισάγετε ημέρες." />
+                                <p:outputLabel for="balanceValue"
+                                               value="Νέο Υπόλοιπο (Ημέρες)"
+                                               style="display:block; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-sub); margin-bottom:6px;" />
+
+                                <p:spinner id="balanceValue"
+                                           value="#{secretaryController.newLeaveBalanceValue}"
+                                           min="0"
+                                           max="365"
+                                           required="true"
+                                           requiredMessage="Εισάγετε ημέρες." />
                             </div>
                         </div>
 
@@ -258,6 +323,7 @@
                                              styleClass="btn-export"
                                              onclick="PF('balancesDialog').hide(); return false;"
                                              style="margin-right:8px;" />
+
                             <p:commandButton value="Ενημέρωση"
                                              icon="pi pi-check"
                                              styleClass="btn-primary"
@@ -277,7 +343,9 @@
                   showEffect="fade"
                   hideEffect="fade"
                   resizable="false"
+                  draggable="false"
                   appendTo="@(body)"
+                  onShow="centerDialog('managerDialog')"
                   style="width:460px;">
             <h:form id="managerDialogForm">
                 <p:outputPanel id="managerDialogPanel">
@@ -287,13 +355,19 @@
                             <i class="pi pi-user"></i>
                             #{secretaryController.selectedUser.firstName} #{secretaryController.selectedUser.lastName}
                             <span style="font-size: 0.85rem; color: var(--text-sub); display: block; margin-top: 4px;">
-                                Τρέχων Ρόλος: #{secretaryController.selectedUser.role.roleName eq 'MANAGER' ? 'Προϊστάμενος' : secretaryController.selectedUser.role.roleName eq 'SECRETARY' ? 'Γραμματεία' : 'Υπάλληλος'}
+                                Τρέχων Ρόλος:
+                                #{secretaryController.selectedUser.role.roleName eq 'MANAGER' ? 'Προϊστάμενος' : secretaryController.selectedUser.role.roleName eq 'SECRETARY' ? 'Γραμματεία' : 'Υπάλληλος'}
                             </span>
                         </div>
 
                         <div class="dialog-comment-wrap" style="margin-top:20px; margin-bottom:20px;">
-                            <p:outputLabel for="managerSelect" value="Επιλογή Προϊσταμένου" style="display:block; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-sub); margin-bottom:6px;" />
-                            <p:selectOneMenu id="managerSelect" value="#{secretaryController.newManagerId}" style="width:100%;">
+                            <p:outputLabel for="managerSelect"
+                                           value="Επιλογή Προϊσταμένου"
+                                           style="display:block; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-sub); margin-bottom:6px;" />
+
+                            <p:selectOneMenu id="managerSelect"
+                                             value="#{secretaryController.newManagerId}"
+                                             style="width:100%;">
                                 <f:selectItem itemLabel="Χωρίς Προϊστάμενο (Clear Manager)" itemValue="" />
                                 <f:selectItems value="#{secretaryController.allManagers}"
                                                var="mgr"
@@ -301,8 +375,9 @@
                                                itemLabel="#{mgr.firstName} #{mgr.lastName} (#{mgr.email})"
                                                itemDisabled="#{mgr.id eq secretaryController.selectedUser.id}" />
                             </p:selectOneMenu>
-                            
-                            <h:panelGroup rendered="#{secretaryController.selectedUser.role.roleName eq 'MANAGER'}" style="display:block; margin-top:12px;">
+
+                            <h:panelGroup rendered="#{secretaryController.selectedUser.role.roleName eq 'MANAGER'}"
+                                          style="display:block; margin-top:12px;">
                                 <div style="background-color: #fff9db; color: #b28900; border: 1px solid #ffe3e3; border-radius: var(--radius); padding: 10px; font-size: 0.82rem; display: flex; align-items: flex-start; gap: 8px;">
                                     <i class="pi pi-exclamation-triangle" style="font-size: 1.1rem; margin-top: 2px;"></i>
                                     <span>
@@ -318,6 +393,7 @@
                                              styleClass="btn-export"
                                              onclick="PF('managerDialog').hide(); return false;"
                                              style="margin-right:8px;" />
+
                             <p:commandButton value="Αποθήκευση"
                                              icon="pi pi-save"
                                              styleClass="btn-approve"

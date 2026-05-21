@@ -1049,3 +1049,35 @@ body .ui-growl-item-container {
     color: var(--text-sub) !important;
     font-size: 0.85rem !important;
 }
+
+.compact-table-actions {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+}
+
+.compact-action-button.ui-button {
+    width: 96px !important;
+    min-width: 96px !important;
+    max-width: 96px !important;
+    padding: 8px 10px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+}
+
+.compact-action-button .ui-button-icon-left {
+    position: static !important;
+    margin: 0 !important;
+    transform: none !important;
+}
+
+.compact-action-button .ui-button-text {
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 0.85rem !important;
+    white-space: nowrap !important;
+}
