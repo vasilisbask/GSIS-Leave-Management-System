@@ -15,14 +15,25 @@
           rel="stylesheet" />
 </h:head>
 
-<h:body>
+<h:body styleClass="#{not empty loginController.loggedInUser ? 'has-sidebar' : 'no-sidebar'}">
 
-    <ui:include src="header.xhtml" />
+    <!-- Right Sidebar Navigation Drawer -->
+    <h:panelGroup rendered="#{not empty loginController.loggedInUser}">
+        <ui:include src="sidebar.xhtml" />
+    </h:panelGroup>
 
-    <div class="container">
-        <ui:insert name="content">
-        </ui:insert>
+    <!-- Main Content Flow Area -->
+    <div class="layout-main">
+        <ui:include src="header.xhtml" />
+
+        <div class="container">
+            <ui:insert name="content">
+            </ui:insert>
+        </div>
     </div>
+
+    <!-- Toggle Script for Persistent Layout Actions -->
+    <h:outputScript library="js" name="sidebar.js" />
 
 </h:body>
 </html>

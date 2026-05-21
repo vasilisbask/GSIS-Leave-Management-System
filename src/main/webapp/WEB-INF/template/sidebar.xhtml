@@ -1,0 +1,94 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <div class="sidebar">
+        <!-- Sidebar Brand / Centered Logo -->
+        <div class="sidebar-brand">
+            <h:graphicImage name="images/gsis_logo.png" alt="GSIS Logo" styleClass="sidebar-logo" />
+        </div>
+
+        <!-- Sidebar Navigation Drawer -->
+        <div class="sidebar-nav">
+            <h:panelGroup rendered="#{not empty loginController.loggedInUser}">
+                
+                <!-- Approvals & Statistics (Manager Only) -->
+                <h:panelGroup rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'MANAGER'}">
+                    <div class="sidebar-category">ΕΓΚΡΙΣΕΙΣ &amp; ΕΛΕΓΧΟΣ</div>
+                    
+                    <h:outputLink value="#{request.contextPath}/manager/stats.xhtml"
+                                  styleClass="sidebar-link #{request.servletPath.contains('stats') ? 'active' : ''}">
+                        <i class="pi pi-chart-bar"></i>
+                        <span>Επισκόπηση</span>
+                    </h:outputLink>
+
+                    <h:outputLink value="#{request.contextPath}/manager/requests.xhtml"
+                                  styleClass="sidebar-link #{request.servletPath.contains('/manager/requests') ? 'active' : ''}">
+                        <i class="pi pi-list"></i>
+                        <span>Αιτήματα Αδείας</span>
+                    </h:outputLink>
+
+                    <h:outputLink value="#{request.contextPath}/manager/audit.xhtml"
+                                  styleClass="sidebar-link #{request.servletPath.contains('audit') ? 'active' : ''}">
+                        <i class="pi pi-history"></i>
+                        <span>Αρχείο Ελέγχου</span>
+                    </h:outputLink>
+                </h:panelGroup>
+
+                <!-- Users & System Administration (Secretary Only) -->
+                <h:panelGroup rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'SECRETARY'}">
+                    <div class="sidebar-category">ΔΙΑΧΕΙΡΙΣΗ</div>
+                    
+                    <h:outputLink value="#{request.contextPath}/secretary/users.xhtml"
+                                  styleClass="sidebar-link #{request.servletPath.contains('/secretary/users') ? 'active' : ''}">
+                        <i class="pi pi-users"></i>
+                        <span>Διαχείριση Χρηστών</span>
+                    </h:outputLink>
+                </h:panelGroup>
+
+                <!-- My Personal Leaves (All Authenticated Employees) -->
+                <div class="sidebar-category">ΟΙ ΑΔΕΙΕΣ ΜΟΥ</div>
+                
+                <h:outputLink value="#{request.contextPath}/employee/dashboard.xhtml"
+                              styleClass="sidebar-link #{request.servletPath.contains('/employee/dashboard') ? 'active' : ''}">
+                    <i class="pi pi-send"></i>
+                    <span>Νέο Αίτημα</span>
+                </h:outputLink>
+
+                <h:outputLink value="#{request.contextPath}/employee/history.xhtml"
+                              styleClass="sidebar-link #{request.servletPath.contains('/employee/history') ? 'active' : ''}">
+                    <i class="pi pi-calendar"></i>
+                    <span>Ιστορικό Αδειών</span>
+                </h:outputLink>
+                
+            </h:panelGroup>
+        </div>
+
+        <!-- Sidebar Footer / Profile Card Section -->
+        <div class="sidebar-footer">
+            <div class="sidebar-profile">
+                <div class="profile-avatar">
+                    <i class="pi pi-user" style="font-size: 1.1rem; color: var(--blue);"></i>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-name">#{loginController.loggedInUser.firstName} #{loginController.loggedInUser.lastName}</div>
+                    <div class="profile-role">
+                        <h:outputText value="Διαχειριστής" rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'MANAGER'}" />
+                        <h:outputText value="Γραμματεία" rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'SECRETARY'}" />
+                        <h:outputText value="Υπάλληλος" rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'EMPLOYEE'}" />
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Primary Logout Button inside Sidebar Footer -->
+            <h:form id="sidebarLogoutForm" styleClass="sidebar-logout-form">
+                <p:commandLink action="#{loginController.logout}" styleClass="sidebar-logout-btn">
+                    <i class="pi pi-sign-out"></i>
+                    <span>Αποσύνδεση</span>
+                </p:commandLink>
+            </h:form>
+        </div>
+    </div>
+
+</ui:composition>

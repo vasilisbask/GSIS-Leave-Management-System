@@ -8,6 +8,30 @@ Employees can submit leave requests and view their leave history. Managers can r
 
 This project is being developed as part of an internship at the **General Secretariat of Information Systems (GSIS — Γενική Γραμματεία Πληροφοριακών Συστημάτων)**.
 
+## Screenshots
+
+### Login
+![Login page](docs/screenshots/login.png)
+
+### Employee Dashboard
+![Employee dashboard](docs/screenshots/employee_dashboard.png)
+
+### Leave History
+![Leave history](docs/screenshots/employee_history.png)
+
+### Manager — Pending Requests
+![Manager requests](docs/screenshots/manager_requests.png)
+
+### Manager — Statistics
+![Manager statistics](docs/screenshots/manager_stats.png)
+
+### Manager — Audit Log
+![Audit log](docs/screenshots/manager_audit.png)
+
+### Secretary — User Management
+![Secretary user management](docs/screenshots/secretary_users.png)
+
+
 ## Tech Stack
 
 - Java 21

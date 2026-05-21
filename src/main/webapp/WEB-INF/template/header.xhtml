@@ -3,140 +3,64 @@
                 xmlns:ui="jakarta.faces.facelets"
                 xmlns:p="http://primefaces.org/ui">
 
-    <div class="header-top">
-
-        <div class="header-brand">
-            <h:graphicImage name="images/gsis_logo.png"
-                            alt="GSIS Logo"
-                            styleClass="logo-image" />
-
-            <div class="header-titles">
-                <h2>Σύστημα Διαχείρισης Αδειών</h2>
+    <!-- Unified Topbar Header Layout -->
+    <div class="topbar">
+        <!-- Left aligned: Official Brand Logo & Title -->
+        <div class="topbar-left">
+            <div class="topbar-logo-wrap">
+                <h:graphicImage name="images/gsis_logo.png" alt="GSIS Logo" styleClass="topbar-logo" />
+                <div class="topbar-title">
+                    <h2>Σύστημα Διαχείρισης Αδειών</h2>
+                </div>
             </div>
         </div>
-
-        <div class="header-right">
-
-            <h:panelGroup rendered="#{empty loginController.loggedInUser}">
-                <span class="header-badge">
-                    <i class="pi pi-lock" style="margin-right:5px;"></i>
-                    Δημόσια Πρόσβαση
-                </span>
-            </h:panelGroup>
-
+        
+        <div class="topbar-right">
+            
+            <!-- Rendered for authenticated users -->
             <h:panelGroup rendered="#{not empty loginController.loggedInUser}">
-                <span class="header-badge">
-                    <i class="pi pi-user" style="margin-right:5px;"></i>
-                    #{loginController.loggedInUser.firstName}
-                    #{loginController.loggedInUser.lastName}
-                </span>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span class="topbar-badge">
+                        <i class="pi pi-shield" style="margin-right:6px;"></i>
+                        <h:outputText value="Διαχειριστής" rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'MANAGER'}" />
+                        <h:outputText value="Γραμματεία" rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'SECRETARY'}" />
+                        <h:outputText value="Υπάλληλος" rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'EMPLOYEE'}" />
+                    </span>
+                    
+                    <span class="topbar-user">
+                        <i class="pi pi-user" style="margin-right:6px;"></i>
+                        #{loginController.loggedInUser.firstName} #{loginController.loggedInUser.lastName}
+                    </span>
 
-                <h:form id="logoutForm">
-                    <p:commandButton value="Αποσύνδεση"
-                                     icon="pi pi-sign-out"
-                                     action="#{loginController.logout}"
-                                     styleClass="btn-export"
-                                     style="margin:0;" />
-                </h:form>
+                    <!-- Quick Logout Action icon button -->
+                    <h:form id="topLogoutForm" style="margin: 0; display: inline-block;">
+                        <p:commandLink action="#{loginController.logout}" styleClass="topbar-logout-link" title="Αποσύνδεση">
+                            <i class="pi pi-sign-out"></i>
+                        </p:commandLink>
+                    </h:form>
+                    
+                    <!-- Sidebar Hamburger menu toggle -->
+                    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle Sidebar" title="Μενού">
+                        <i class="pi pi-bars"></i>
+                    </button>
+                </div>
             </h:panelGroup>
 
-        </div>
-
-    </div>
-
-    <div class="layout-navbar">
-        <div class="nav-container">
-
-            <!-- Guest menu -->
+            <!-- Rendered for guests (Login/Register Navigation Links) -->
             <h:panelGroup rendered="#{empty loginController.loggedInUser}">
+                <div class="topbar-nav-links">
+                    <h:outputLink value="#{request.contextPath}/login.xhtml"
+                                  styleClass="topbar-nav-link #{request.servletPath.contains('login') ? 'active' : ''}">
+                        <i class="pi pi-sign-in"></i>
+                        <span>ΣΥΝΔΕΣΗ</span>
+                    </h:outputLink>
 
-                <h:outputLink value="#{request.contextPath}/login.xhtml"
-                              styleClass="nav-item #{request.servletPath.contains('login') ? 'active' : ''}">
-                    <i class="pi pi-sign-in"></i>
-                    <span>ΣΥΝΔΕΣΗ</span>
-                </h:outputLink>
-
-                <h:outputLink value="#{request.contextPath}/register.xhtml"
-                              styleClass="nav-item #{request.servletPath.contains('register') ? 'active' : ''}">
-                    <i class="pi pi-user-plus"></i>
-                    <span>ΕΓΓΡΑΦΗ</span>
-                </h:outputLink>
-
-            </h:panelGroup>
-
-            <!-- Manager menu -->
-            <h:panelGroup rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'MANAGER'}">
-
-                <h:outputLink value="#{request.contextPath}/manager/stats.xhtml"
-                              styleClass="nav-item #{request.servletPath.contains('stats') ? 'active' : ''}">
-                    <i class="pi pi-chart-bar"></i>
-                    <span>ΕΠΙΣΚΟΠΗΣΗ</span>
-                </h:outputLink>
-
-                <h:outputLink value="#{request.contextPath}/manager/requests.xhtml"
-                              styleClass="nav-item #{request.servletPath.contains('/manager/requests') ? 'active' : ''}">
-                    <i class="pi pi-list"></i>
-                    <span>ΑΙΤΗΜΑΤΑ ΑΔΕΙΑΣ</span>
-                </h:outputLink>
-
-                <h:outputLink value="#{request.contextPath}/manager/audit.xhtml"
-                              styleClass="nav-item #{request.servletPath.contains('audit') ? 'active' : ''}">
-                    <i class="pi pi-history"></i>
-                    <span>ΑΡΧΕΙΟ ΕΛΕΓΧΟΥ</span>
-                </h:outputLink>
-
-                <h:outputLink value="#{request.contextPath}/employee/dashboard.xhtml"
-                              styleClass="nav-item #{request.servletPath.contains('/employee/dashboard') ? 'active' : ''}">
-                    <i class="pi pi-send"></i>
-                    <span>ΝΕΟ ΑΙΤΗΜΑ ΑΔΕΙΑΣ</span>
-                </h:outputLink>
-
-                <h:outputLink value="#{request.contextPath}/employee/history.xhtml"
-                              styleClass="nav-item #{request.servletPath.contains('/employee/history') ? 'active' : ''}">
-                    <i class="pi pi-calendar"></i>
-                    <span>ΙΣΤΟΡΙΚΟ ΑΔΕΙΩΝ</span>
-                </h:outputLink>
-
-            </h:panelGroup>
-
-            <!-- Secretary menu -->
-            <h:panelGroup rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'SECRETARY'}">
-
-                <h:outputLink value="#{request.contextPath}/secretary/users.xhtml"
-                              styleClass="nav-item #{request.servletPath.contains('/secretary/users') ? 'active' : ''}">
-                    <i class="pi pi-users"></i>
-                    <span>ΔΙΑΧΕΙΡΙΣΗ ΧΡΗΣΤΩΝ</span>
-                </h:outputLink>
-
-                <h:outputLink value="#{request.contextPath}/employee/dashboard.xhtml"
-                              styleClass="nav-item #{request.servletPath.contains('/employee/dashboard') ? 'active' : ''}">
-                    <i class="pi pi-send"></i>
-                    <span>ΝΕΟ ΑΙΤΗΜΑ ΑΔΕΙΑΣ</span>
-                </h:outputLink>
-
-                <h:outputLink value="#{request.contextPath}/employee/history.xhtml"
-                              styleClass="nav-item #{request.servletPath.contains('/employee/history') ? 'active' : ''}">
-                    <i class="pi pi-calendar"></i>
-                    <span>ΙΣΤΟΡΙΚΟ ΑΔΕΙΩΝ</span>
-                </h:outputLink>
-
-            </h:panelGroup>
-
-            <!-- Employee menu -->
-            <h:panelGroup rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'EMPLOYEE'}">
-
-                <h:outputLink value="#{request.contextPath}/employee/dashboard.xhtml"
-                              styleClass="nav-item #{request.servletPath.contains('/employee/dashboard') ? 'active' : ''}">
-                    <i class="pi pi-send"></i>
-                    <span>ΝΕΟ ΑΙΤΗΜΑ ΑΔΕΙΑΣ</span>
-                </h:outputLink>
-
-                <h:outputLink value="#{request.contextPath}/employee/history.xhtml"
-                              styleClass="nav-item #{request.servletPath.contains('/employee/history') ? 'active' : ''}">
-                    <i class="pi pi-history"></i>
-                    <span>ΙΣΤΟΡΙΚΟ ΑΔΕΙΩΝ</span>
-                </h:outputLink>
-
+                    <h:outputLink value="#{request.contextPath}/register.xhtml"
+                                  styleClass="topbar-nav-link #{request.servletPath.contains('register') ? 'active' : ''}">
+                        <i class="pi pi-user-plus"></i>
+                        <span>ΕΓΓΡΑΦΗ</span>
+                    </h:outputLink>
+                </div>
             </h:panelGroup>
 
         </div>
