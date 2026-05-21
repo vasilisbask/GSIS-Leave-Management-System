@@ -74,9 +74,9 @@
                 <div class="profile-info">
                     <div class="profile-name">#{loginController.loggedInUser.firstName} #{loginController.loggedInUser.lastName}</div>
                     <div class="profile-role">
-                        <h:outputText value="Διαχειριστής" rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'MANAGER'}" />
-                        <h:outputText value="Γραμματεία" rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'SECRETARY'}" />
-                        <h:outputText value="Υπάλληλος" rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'EMPLOYEE'}" />
+                        <h:outputText value="ΔΙΑΧΕΙΡΙΣΤΗΣ" rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'MANAGER'}" />
+                        <h:outputText value="ΓΡΑΜΜΑΤΕΙΑ" rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'SECRETARY'}" />
+                        <h:outputText value="ΥΠΑΛΛΗΛΟΣ" rendered="#{loginController.loggedInUserRole.toUpperCase() eq 'EMPLOYEE'}" />
                     </div>
                 </div>
             </div>

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.ArrayList;
 
 @Named
 @ViewScoped
@@ -41,6 +42,8 @@ public class EmployeeController implements Serializable {
     private String reason;
     private LeaveRequest selectedRequest;
     private UploadedFile uploadedFile;
+    private String historyStatusFilter = "";
+    private String historyLeaveTypeFilter = "";
 
     @PostConstruct
     public void init() {
@@ -163,6 +166,32 @@ public class EmployeeController implements Serializable {
                 .build();
     }
 
+    public List<LeaveRequest> getFilteredLeaveHistory() {
+        if (leaveHistory == null) {
+            return new ArrayList<>();
+        }
+
+        return leaveHistory.stream()
+                .filter(req -> {
+                    boolean matchesStatus = true;
+
+                    if (historyStatusFilter != null && !historyStatusFilter.isBlank()) {
+                        matchesStatus = req.getStatus() != null
+                                && req.getStatus().name().equals(historyStatusFilter);
+                    }
+
+                    boolean matchesLeaveType = true;
+
+                    if (historyLeaveTypeFilter != null && !historyLeaveTypeFilter.isBlank()) {
+                        matchesLeaveType = req.getLeaveType() != null
+                                && req.getLeaveType().equals(historyLeaveTypeFilter);
+                    }
+
+                    return matchesStatus && matchesLeaveType;
+                })
+                .toList();
+    }
+
     public LocalDate getToday() { return LocalDate.now(); }
 
     public Employee getEmployee() { return employee; }
@@ -181,4 +210,8 @@ public class EmployeeController implements Serializable {
     public void setSelectedRequest(LeaveRequest selectedRequest) { this.selectedRequest = selectedRequest; }
     public UploadedFile getUploadedFile() { return uploadedFile; }
     public void setUploadedFile(UploadedFile uploadedFile) { this.uploadedFile = uploadedFile; }
+    public String getHistoryStatusFilter() { return historyStatusFilter; }
+    public void setHistoryStatusFilter(String historyStatusFilter) { this.historyStatusFilter = historyStatusFilter; }
+    public String getHistoryLeaveTypeFilter() { return historyLeaveTypeFilter; }
+    public void setHistoryLeaveTypeFilter(String historyLeaveTypeFilter) { this.historyLeaveTypeFilter = historyLeaveTypeFilter; }
 }

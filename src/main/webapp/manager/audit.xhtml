@@ -127,14 +127,14 @@
                 </p:column>
 
                 <p:column headerText="ΑΝΑΓΝΩΡΙΣΤΙΚΟ"
-                          sortBy="#{log.targetId}"
+                          sortBy="#{log.id}"
                           exportValue="#{auditController.exportTargetId(log)}"
                           headerStyleClass="center-column-header"
                           style="width:150px; text-align:center;">
                     <span style="font-family: monospace; color:var(--blue); font-weight:600;
                                  background:var(--blue-light); padding:2px 8px;
                                  border-radius:4px; font-size:0.85rem;">
-                        REQ-#{log.targetId}
+                        #{auditController.exportTargetId(log)}
                     </span>
                 </p:column>
 

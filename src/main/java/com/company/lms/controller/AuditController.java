@@ -92,7 +92,7 @@ public class AuditController implements Serializable {
             return "";
         }
 
-        return "REQ-" + log.getTargetId();
+        return "AUD-" + log.getTargetId();
     }
 
     public String exportComment(AuditLog log) {

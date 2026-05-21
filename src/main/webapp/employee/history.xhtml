@@ -37,8 +37,37 @@
                 </span>
             </div>
 
+            <div class="toolbar">
+                <div class="toolbar-left">
+
+                    <p:selectOneMenu id="historyStatusFilter"
+                                     value="#{employeeController.historyStatusFilter}"
+                                     style="width:220px;">
+                        <f:selectItem itemLabel="Όλες οι καταστάσεις" itemValue="" />
+                        <f:selectItem itemLabel="Εγκεκριμένες" itemValue="APPROVED" />
+                        <f:selectItem itemLabel="Απορριφθείσες" itemValue="REJECTED" />
+                        <f:selectItem itemLabel="Εκκρεμείς" itemValue="PENDING" />
+
+                        <p:ajax event="change" update="historyTable" />
+                    </p:selectOneMenu>
+
+                    <p:selectOneMenu id="historyLeaveTypeFilter"
+                                     value="#{employeeController.historyLeaveTypeFilter}"
+                                     style="width:220px;">
+                        <f:selectItem itemLabel="Όλοι οι τύποι άδειας" itemValue="" />
+                        <f:selectItems value="#{employeeController.leaveTypes}"
+                                       var="type"
+                                       itemLabel="#{type.displayName}"
+                                       itemValue="#{type.displayName}" />
+
+                        <p:ajax event="change" update="historyTable" />
+                    </p:selectOneMenu>
+
+                </div>
+            </div>
+
             <p:dataTable id="historyTable"
-                         value="#{employeeController.leaveHistory}"
+                         value="#{employeeController.filteredLeaveHistory}"
                          var="leaveReq"
                          rowKey="#{leaveReq.id}"
                          emptyMessage="Δεν υπάρχουν αιτήματα άδειας."
