@@ -40,15 +40,6 @@ public class LeaveBalanceRepository {
                 .executeUpdate();
     }
 
-    public int sumTotalForEmployee(Integer employeeId) {
-        Long sum = em.createQuery(
-                "SELECT COALESCE(SUM(lb.balance), 0) FROM LeaveBalance lb WHERE lb.employee.id = :employeeId",
-                Long.class)
-                .setParameter("employeeId", employeeId)
-                .getSingleResult();
-        return sum == null ? 0 : sum.intValue();
-    }
-
     public int sumTotalForManager(Integer managerId) {
         Long sum = em.createQuery(
                 "SELECT COALESCE(SUM(lb.balance), 0) FROM LeaveBalance lb WHERE lb.employee.manager.id = :managerId",

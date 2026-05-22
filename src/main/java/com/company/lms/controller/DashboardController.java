@@ -295,16 +295,6 @@ public class DashboardController implements Serializable {
         return "leave-type-annual";
     }
 
-    private String getLeaveTypeColor(String leaveType) {
-        for (LeaveType type : LeaveType.values()) {
-            if (type.getDisplayName().equals(leaveType)) {
-                return type.getColor();
-            }
-        }
-
-        return "#0188ca";
-    }
-
     public PieChartModel getPieModel() { return pieModel; }
     public BarChartModel getBarModel() { return barModel; }
     public LineChartModel getTrendModel() { return trendModel; }

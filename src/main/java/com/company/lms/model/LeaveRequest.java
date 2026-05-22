@@ -6,9 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import com.company.lms.util.GreekHolidayUtil;
-import jakarta.persistence.Basic;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Lob;
 
 @Entity
 @Table(name = "leaves")

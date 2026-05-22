@@ -105,14 +105,6 @@ public class EmployeeLeaveService {
         return leaveBalanceRepo.findByEmployeeId(employeeId);
     }
 
-    public int getTotalLeaveBalance(Integer employeeId) {
-        return leaveBalanceRepo.sumTotalForEmployee(employeeId);
-    }
-
-    public int getBalanceForType(Integer employeeId, String leaveType) {
-        return leaveBalanceRepo.getBalance(employeeId, leaveType);
-    }
-
     public int calculateWorkingDays(LocalDate startDate, LocalDate endDate) {
         return GreekHolidayUtil.calculateWorkingDays(startDate, endDate);
     }

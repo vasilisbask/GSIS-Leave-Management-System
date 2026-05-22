@@ -16,14 +16,6 @@ public class LeaveRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public List<LeaveRequest> findByStatus(LeaveStatus status) {
-        return em.createQuery(
-                "SELECT l FROM LeaveRequest l JOIN FETCH l.employee WHERE l.status = :status ORDER BY l.startDate ASC", 
-                LeaveRequest.class)
-                .setParameter("status", status)
-                .getResultList();
-    }
-
     public LeaveRequest findById(Integer id) {
         return em.find(LeaveRequest.class, id);
     }

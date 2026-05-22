@@ -78,7 +78,6 @@ public class PdfExportService {
             BaseColor primaryColor = new BaseColor(1, 136, 202);
             BaseColor darkGray = new BaseColor(51, 51, 51);
             BaseColor lightGray = new BaseColor(240, 240, 240);
-            BaseColor borderColor = new BaseColor(220, 220, 220);
 
             // Fonts
             Font headerDeptFont = getGreekFont(12, Font.BOLD, primaryColor);
@@ -128,22 +127,22 @@ public class PdfExportService {
             empTable.setSpacingAfter(20f);
             empTable.setWidths(new float[]{30f, 70f});
 
-            addGridCell(empTable, "Ονοματεπώνυμο:", bodyBoldFont, lightGray, true);
-            addGridCell(empTable, request.getEmployee().getFullName(), bodyNormalFont, BaseColor.WHITE, false);
+            addGridCell(empTable, "Ονοματεπώνυμο:", bodyBoldFont, lightGray);
+            addGridCell(empTable, request.getEmployee().getFullName(), bodyNormalFont, BaseColor.WHITE);
 
-            addGridCell(empTable, "Ηλεκτρονικό Ταχυδρομείο (Email):", bodyBoldFont, lightGray, true);
-            addGridCell(empTable, request.getEmployee().getEmail(), bodyNormalFont, BaseColor.WHITE, false);
+            addGridCell(empTable, "Ηλεκτρονικό Ταχυδρομείο (Email):", bodyBoldFont, lightGray);
+            addGridCell(empTable, request.getEmployee().getEmail(), bodyNormalFont, BaseColor.WHITE);
 
-            addGridCell(empTable, "Ρόλος / Θέση:", bodyBoldFont, lightGray, true);
+            addGridCell(empTable, "Ρόλος / Θέση:", bodyBoldFont, lightGray);
             String roleName = request.getEmployee().getRole() != null ? request.getEmployee().getRole().getRoleName() : "EMPLOYEE";
             String roleDisplayName = "Υπάλληλος";
             if ("MANAGER".equals(roleName)) roleDisplayName = "Προϊστάμενος";
             else if ("SECRETARY".equals(roleName)) roleDisplayName = "Γραμματεία (Διαχειριστής)";
-            addGridCell(empTable, roleDisplayName, bodyNormalFont, BaseColor.WHITE, false);
+            addGridCell(empTable, roleDisplayName, bodyNormalFont, BaseColor.WHITE);
 
-            addGridCell(empTable, "Εγκρίνων Προϊστάμενος:", bodyBoldFont, lightGray, true);
+            addGridCell(empTable, "Εγκρίνων Προϊστάμενος:", bodyBoldFont, lightGray);
             String managerName = request.getEmployee().getManager() != null ? request.getEmployee().getManager().getFullName() : "Κεντρική Διοίκηση";
-            addGridCell(empTable, managerName, bodyNormalFont, BaseColor.WHITE, false);
+            addGridCell(empTable, managerName, bodyNormalFont, BaseColor.WHITE);
 
             document.add(empTable);
 
@@ -157,31 +156,31 @@ public class PdfExportService {
             leaveTable.setSpacingAfter(25f);
             leaveTable.setWidths(new float[]{30f, 70f});
 
-            addGridCell(leaveTable, "Τύπος Άδειας:", bodyBoldFont, lightGray, true);
-            addGridCell(leaveTable, request.getLeaveType(), bodyNormalFont, BaseColor.WHITE, false);
+            addGridCell(leaveTable, "Τύπος Άδειας:", bodyBoldFont, lightGray);
+            addGridCell(leaveTable, request.getLeaveType(), bodyNormalFont, BaseColor.WHITE);
 
-            addGridCell(leaveTable, "Ημερομηνία Έναρξης:", bodyBoldFont, lightGray, true);
-            addGridCell(leaveTable, request.getStartDate().format(DATE_FORMATTER), bodyNormalFont, BaseColor.WHITE, false);
+            addGridCell(leaveTable, "Ημερομηνία Έναρξης:", bodyBoldFont, lightGray);
+            addGridCell(leaveTable, request.getStartDate().format(DATE_FORMATTER), bodyNormalFont, BaseColor.WHITE);
 
-            addGridCell(leaveTable, "Ημερομηνία Λήξης:", bodyBoldFont, lightGray, true);
-            addGridCell(leaveTable, request.getEndDate().format(DATE_FORMATTER), bodyNormalFont, BaseColor.WHITE, false);
+            addGridCell(leaveTable, "Ημερομηνία Λήξης:", bodyBoldFont, lightGray);
+            addGridCell(leaveTable, request.getEndDate().format(DATE_FORMATTER), bodyNormalFont, BaseColor.WHITE);
 
-            addGridCell(leaveTable, "Συνολικές Ημέρες:", bodyBoldFont, lightGray, true);
-            addGridCell(leaveTable, String.valueOf(request.getDurationDays()) + " Ημέρες (Ημερολογιακές)", bodyNormalFont, BaseColor.WHITE, false);
+            addGridCell(leaveTable, "Συνολικές Ημέρες:", bodyBoldFont, lightGray);
+            addGridCell(leaveTable, String.valueOf(request.getDurationDays()) + " Ημέρες (Ημερολογιακές)", bodyNormalFont, BaseColor.WHITE);
 
-            addGridCell(leaveTable, "Εργάσιμες Ημέρες:", bodyBoldFont, lightGray, true);
-            addGridCell(leaveTable, String.valueOf(request.getWorkingDays()) + " Ημέρες (Εξαιρούνται Σαββατοκύριακα & Αργίες)", bodyNormalFont, BaseColor.WHITE, false);
+            addGridCell(leaveTable, "Εργάσιμες Ημέρες:", bodyBoldFont, lightGray);
+            addGridCell(leaveTable, String.valueOf(request.getWorkingDays()) + " Ημέρες (Εξαιρούνται Σαββατοκύριακα & Αργίες)", bodyNormalFont, BaseColor.WHITE);
 
-            addGridCell(leaveTable, "Αιτιολογία Υπαλλήλου:", bodyBoldFont, lightGray, true);
+            addGridCell(leaveTable, "Αιτιολογία Υπαλλήλου:", bodyBoldFont, lightGray);
             String reasonText = request.getReason() != null && !request.getReason().isBlank() ? request.getReason() : "-";
-            addGridCell(leaveTable, reasonText, bodyNormalFont, BaseColor.WHITE, false);
+            addGridCell(leaveTable, reasonText, bodyNormalFont, BaseColor.WHITE);
 
-            addGridCell(leaveTable, "Σχόλιο Έγκρισης:", bodyBoldFont, lightGray, true);
+            addGridCell(leaveTable, "Σχόλιο Έγκρισης:", bodyBoldFont, lightGray);
             String commentText = request.getManagerComment() != null && !request.getManagerComment().isBlank() ? request.getManagerComment() : "-";
-            addGridCell(leaveTable, commentText, bodyNormalFont, BaseColor.WHITE, false);
+            addGridCell(leaveTable, commentText, bodyNormalFont, BaseColor.WHITE);
 
-            addGridCell(leaveTable, "Κατάσταση Αιτήματος:", bodyBoldFont, lightGray, true);
-            addGridCell(leaveTable, "ΕΓΚΡΙΘΗΚΕ", getGreekFont(10, Font.BOLD, new BaseColor(46, 125, 50)), BaseColor.WHITE, false);
+            addGridCell(leaveTable, "Κατάσταση Αιτήματος:", bodyBoldFont, lightGray);
+            addGridCell(leaveTable, "ΕΓΚΡΙΘΗΚΕ", getGreekFont(10, Font.BOLD, new BaseColor(46, 125, 50)), BaseColor.WHITE);
 
             document.add(leaveTable);
 
@@ -422,7 +421,7 @@ public class PdfExportService {
 
             BaseColor primaryColor = new BaseColor(1, 136, 202); // GSIS Blue
             BaseColor darkGray = new BaseColor(51, 51, 51);
-            BaseColor lightGray = new BaseColor(245, 245, 245);
+
 
             Font headerDeptFont = getGreekFont(12, Font.BOLD, primaryColor);
             Font headerSubFont = getGreekFont(9, Font.NORMAL, darkGray);
@@ -554,18 +553,14 @@ public class PdfExportService {
 
     // Helper functions for formatting PDF tables
 
-    private void addGridCell(PdfPTable table, String text, Font font, BaseColor bgColor, boolean isLabel) {
+    private void addGridCell(PdfPTable table, String text, Font font, BaseColor bgColor) {
         PdfPCell cell = new PdfPCell(new Phrase(text, font));
         cell.setBackgroundColor(bgColor);
         cell.setPadding(7f);
         cell.setPaddingLeft(10f);
         cell.setBorderColor(new BaseColor(220, 220, 220));
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        if (isLabel) {
-            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-        } else {
-            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-        }
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.addCell(cell);
     }
 

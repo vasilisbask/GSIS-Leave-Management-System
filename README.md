@@ -34,45 +34,57 @@ This project is being developed as part of an internship at the **General Secret
 
 ## Tech Stack
 
-- Java 21
-- Jakarta EE 10
-- JSF / Facelets
-- PrimeFaces
-- CDI
-- JPA
-- MySQL
-- Payara Server
-- Maven
-- BCrypt
+- **Java 21**
+- **Jakarta EE 10**
+- **JSF / Facelets**
+- **PrimeFaces**
+- **CDI & JPA (Hibernate)**
+- **MySQL**
+- **Payara Server**
+- **Maven**
+- **BCrypt**
+- **iText PDF**
 
 ## Main Features
 
 ### Employee
 
-- Register and sign in
-- Submit leave requests
-- View leave history
-- Track annual leave balance
-- Validation for overlapping leave requests
-- Working day calculation excluding weekends and Greek holidays
+- **Register and Sign In**: Secure registration and login using BCrypt password hashing.
+- **Leave Request Submission**:
+  - Submit leave requests specifying start/end date, leave type, and reason.
+  - **PDF Attachments**: Support uploading PDF files as supporting documents (e.g., medical certificates for sick leave), strictly validated by file extension and MIME type.
+- **Leave History & Balances**:
+  - View comprehensive leave history with interactive status and type filtering.
+  - Download previously uploaded PDF attachments.
+  - Track annual, sick, and other leave balance categories in real time.
+- **Official PDF Export**:
+  - **Leave Certificate**: Download a highly formatted official leave decision document (`Επίσημη Απόφαση Έγκρισης Άδειας`) for any approved request, incorporating official GSIS letterhead, detailed working vs. calendar day breakdowns, manager comments, and a digital signature block.
+  - **Leave History Statement**: Export a professional service record (`Υπηρεσιακή Κατάσταση Αδειών`) listing active balance allowances, remaining days, and detailed request histories with color-coded status badges.
+- **Validations**: Real-time checking for overlapping leave requests, past dates, and available balance limits.
+- **Greek Holiday Integration**: Automatic calculation of actual working days, excluding weekends and official Greek public holidays.
 
 ### Manager
 
-- View pending requests only from assigned employees
-- Approve or reject requests with comments
-- View leave statistics
-- View audit log records
-- Export audit log data
-- Submit and view personal leave requests as an employee
+- **Employee Management**: View pending requests from assigned employees only.
+- **Review & Decisions**: Approve or reject requests with review comments.
+- **Document Review**: Download and inspect employee-attached PDF supporting documents directly from the pending request view.
+- **Interactive Dashboard & Statistics**:
+  - **Status Distribution**: Pie Chart illustrating the ratio of approved, pending, and rejected requests.
+  - **Leave Type Metrics**: Bar Chart detailing request frequency across different leave types.
+  - **Yearly Trend Analytics**: Multi-series Line Chart mapping monthly leave distribution throughout the calendar year.
+  - **KPI Widgets**: Live trackers for *Leave Utilization %*, *Oldest Pending Request Age* (in days), and an *On Leave This Week* team roster.
+- **Team Schedule Calendar**: Interactive calendar view (built on PrimeFaces Schedule) showing approved team leaves in color-coded blocks for efficient shift planning.
+- **Audit Logging**: View, filter, and inspect comprehensive action logs of administrative actions.
+- **Landscape PDF Export**: Export the manager's audit and safety log into a wide, landscape-oriented PDF table for compliance reviews.
+- **Personal Submissions**: Submit and view personal leave requests as an employee.
 
 ### Secretary
 
-- View all registered users with paginated search and role filtering
-- Change user roles (Employee / Manager / Secretary)
-- Assign or remove a manager for any employee
-- Adjust leave balances (annual / sick / other) per employee
-- All secretary actions are recorded in the audit log
-- Secretaries cannot change their own role
+- **User Administration**: View all registered users with paginated search and role filtering.
+- **Role Assignment**: Elevate or demote user roles (`Employee`, `Manager`, `Secretary`).
+- **Manager Assignment**: Set or modify reporting manager relationships for employees.
+- **Leave Balance Adjustments**: Manually adjust leave balances (annual, sick, other) per employee with all updates recorded in the audit log.
+- **Self-Modification Restrictions**: System guards preventing secretaries from altering their own role or manager assignments.
 
 ## Database
 
@@ -119,42 +131,25 @@ Application URL example:
 http://localhost:8080/leave-management-system
 ```
 
-## Configuration Files
-
-- `beans.xml`: enables CDI bean discovery.
-- `faces-config.xml`: basic JSF configuration file.
-- `403.xhtml`: forbidden access page, placed under `src/main/webapp/403.xhtml`.
-
 ## Business Rules
 
-- Employees without an assigned manager cannot submit leave requests.
-- Managers can only see requests from employees assigned to them.
-- Managers cannot approve or reject their own leave requests.
-- Leave requests cannot overlap with existing pending or approved requests.
-- Leave duration is calculated using working days, excluding weekends and Greek public holidays.
-- Secretaries cannot change their own role.
-- A user cannot be assigned as their own manager.
-- If a manager's role is changed, all their subordinates are automatically unassigned.
-
-## Main Pages
-
-```text
-/login.xhtml
-/register.xhtml
-/employee/dashboard.xhtml
-/employee/history.xhtml
-/manager/stats.xhtml
-/manager/requests.xhtml
-/manager/audit.xhtml
-/secretary/users.xhtml
-/403.xhtml
-```
+- **Manager Mandate**: Employees without an assigned manager cannot submit leave requests.
+- **Security Scopes**: Managers can only see and review requests from employees assigned to them.
+- **Self-Approval Guard**: Managers cannot approve or reject their own leave requests.
+- **Overlap Prevention**: Leave requests cannot overlap with existing pending or approved requests.
+- **Working Day Calculations**: Leave duration is calculated using working days, excluding weekends and official Greek public holidays.
+- **Role Alteration Safeguards**: Secretaries cannot change their own roles.
+- **Cyclic Assignment Prevention**: A user cannot be assigned as their own manager.
+- **Subordinate Unassignment**: If a manager's role is changed to employee or secretary, all their subordinates are automatically unassigned.
+- **Attachment Constraints**: Uploaded supporting documents must be strictly valid PDF files (both file extension `.pdf` and content type `application/pdf`).
+- **Greek Unicode Compliance**: All exported PDFs dynamically resolve and embed local system fonts (e.g., `Arial`, `Tahoma`, `DejaVu Sans`) to ensure proper rendering of Greek characters.
 
 ## Security
 
 - Passwords are hashed with BCrypt.
-- Role-based access logic separates employee, manager, and secretary functionality.
-- Audit logs record manager approval/rejection actions and all secretary administrative actions.
+- Role-based access control (RBAC) separates employee, manager, and secretary scopes.
+- Cryptographically secure session management.
+- Comprehensive security and compliance audit logs capturing manager decisions, role adjustments, balance alterations, and manager changes.
 
 ## Email Notifications
 
